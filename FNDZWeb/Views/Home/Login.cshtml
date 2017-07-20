@@ -1,0 +1,87 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link href="~/favicon1.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="~/Scripts/jquery-easyui-1.4.1/themes/Gray/easyui.css">
+    <link rel="stylesheet" type="text/css" href="~/Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="~/Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <style>
+        .align-center{ 
+            position:absolute; /*<!--这个属性是设置div以绝对位置显示-->*/
+            top:30%;           /*<!--在离顶部50%的位置显示-->*/
+            left:15%;          /*<!--在离左边50%的位置显示-->*/
+            margin:-150px 0 0 -100px;    /*<!--这个设置大家开始一看，可能觉得好像不是很明白，在下面为大家详细讲解-->*/ 
+            width:1128px; 
+            height:463px;
+            background-image:url('../Images/Logon1.png');
+            }
+        body{background-color:#fefefe} 
+
+    </style>
+    <script>
+        $(function () {
+            $('#UserCode').textbox('textbox').focus();
+            //$("#UserCode").focus();
+        });
+        function submitForm() {
+            var isValid = $('#ff').form('validate');
+            if (isValid) {
+                $('#ff').submit();
+            }
+        }
+        function CheckEnterKey(evt) {
+            if (evt.keyCode == 13) {
+                submitForm();
+            }
+        }
+        
+
+    </script>
+</head>
+<body  onkeydown="return CheckEnterKey(event)">
+<div class="align-center">
+    <table>
+        <tr style="height:180px;">
+            <td style="width:550px;"></td>
+            <td style="width:260px;"></td>
+            <td style="vertical-align:top;text-align:right; width:200px;" ></br></br><a href="http://www.fly-elec.com.cn" target="_blank" style="color: #00309c; text-decoration: none;"><span style='font-family:Times New Roman;font-size:12px;' >公司主页&nbsp;&nbsp;&nbsp;&nbsp;</span></a></td>
+        </tr>
+        <tr style="height:230px;">
+            <td style="width:550px;"></td>
+            <td style="width:260px;vertical-align:text-top">
+                <form id="ff" method="post" action="@Url.Action("Login", "Home")"> 
+                    <div style="margin-bottom:10px">
+                        <input class="easyui-textbox" id="UserCode" name="UserCode" value="@ViewBag.BagUserCode" style="width:80%;height:30px;padding:12px" data-options="prompt:'登录ID',iconCls:'icon-man',iconWidth:38">
+                     </div>
+                    <div style="margin-bottom:20px">
+                        <input class="easyui-textbox" id="Password" name="Password" type="password" style="width:80%;height:30px;padding:12px" data-options="prompt:'登录密码',iconCls:'icon-lock',iconWidth:38">
+                    </div>
+                    <div style="margin-bottom:20px;">
+                        <input type="checkbox"  id="logrem" name="logrem">
+                        <span style='font-family:Times New Roman;font-size:12px;' >记住账号</span>
+                    </div>
+                    <div>
+                        <a href="javascript:;" onclick="submitForm()" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" style="padding:5px 0px;width:80%;">
+                            <span style="font-size:14px;">登录</span>
+                        </a>
+                    </div>
+                </form>
+
+            </td>
+            <td></td>
+        </tr>
+    </table>
+   <div style="height:80px;"></div>
+   <div style="text-align:center;vertical-align:bottom;"><span style='font-family:Times New Roman;font-size:12px;'>版权所有 Copyright(C)2016上海孚奈电子有限公司</span></div>
+</div> 
+
+</body>
+</html>

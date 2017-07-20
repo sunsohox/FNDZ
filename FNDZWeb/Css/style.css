@@ -1,0 +1,43 @@
+a{text-decoration:none;color:#000}
+.easyui-accordion ul{list-style-type:none;margin:0; padding:10px;}
+.easyui-accordion ul li{ padding:0}
+.easyui-accordion ul li a{line-height:24px;color:#0E2D5F}
+.easyui-accordion ul li div{margin:2px 0;padding-left:10px;padding-top:2px;border:1px solid #fff;}
+.easyui-accordion ul li div img{vertical-align:middle;margin-top:-3px}
+.easyui-accordion ul li div.hover{border:1px dashed #99BBE8; background:#E0ECFF;cursor:pointer;}
+.easyui-accordion ul li div.hover a{color:#416AA3;}
+.easyui-accordion ul li div.selected{border:1px solid #99BBE8; background:#E0ECFF;cursor:default;}
+.easyui-accordion ul li div.selected a{color:#416AA3; font-weight:bold;}
+
+.icon{ background:url(../Images/tabicons.png) no-repeat;width:18px; line-height:18px; display:inline-block;}
+.icon-sys{ background-position:0 -200px;}
+.icon-set{ background-position:-380px -200px;}
+.icon-add{background-position: -20px 0;}
+.icon-nav{background-position: -100px -20px; }
+.icon-users{background-position: -100px -480px;}
+.icon-role{background-position: -360px -200px;}
+.icon-set{background-position: -380px -200px;}
+.icon-log{background-position: -380px -80px;}
+.icon-delete{ background-position:-140px -120px;}
+.icon-edit{ background-position:-380px -320px;}
+.icon-magic{ background-position:0 -500px;}
+.icon-database{ background-position:-20px -140px;}
+
+.w150{width: 250px}
+.label{width: 100px;text-align: right;padding-right: 15px}
+td{padding: 10px 0}
+.btn_{padding: 2px 15px;text-align: center}
+.btn_ .l-btn-text{font-size: 15px}
+.textbox{height: 30px!important}
+.validatebox-text{padding-top:8px!important;padding-bottom: 5px!important;}
+textarea{
+    font-size: 12px;
+    white-space: normal;
+    vertical-align: top;
+    outline-style: none;
+    resize: none;
+    border-radius: 5px;
+    padding: 4px;
+    border: 1px solid #95B8E7;
+    background-color: #FFF;
+}

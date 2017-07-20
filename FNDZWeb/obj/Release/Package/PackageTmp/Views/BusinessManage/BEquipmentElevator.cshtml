@@ -1,0 +1,514 @@
+﻿@{
+    string dInterval = Convert.ToString(int.Parse(Admin.EntityDefinitions.ACustomerRule.GetInterval()));
+    string sIntervalName = (ViewBag.EquipmentType == "1") ? "ElevatorInterval" : ((ViewBag.EquipmentType == "2") ? "EscalatorInterval" : "SidewalkInterval");
+    System.Data.DataTable dtProvince = Master.EntityDefinitions.MEquipmentRule.GetProvince(ViewBag.EquipmentType);
+    System.Data.DataTable dtCity = Master.EntityDefinitions.MEquipmentRule.GetCity(ViewBag.EquipmentType);
+    System.Data.DataTable dtCounty = Master.EntityDefinitions.MEquipmentRule.GetCounty(ViewBag.EquipmentType);
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery.timers-1.2.js"></script>
+    <style>
+       .yj{
+    padding:5px; width:265px; height:150px;
+    border: 0px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+    font-size:4px;
+    background-color:#e3ebf6;
+    }
+       .yj2{
+    padding:5px; width:265px; height:150px;
+    border: 0px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+    font-size:4px;
+    background-color:#e3ebf6;
+    }
+
+    .tu {
+     padding:5px; width:90px; height:130px;
+    border: 1px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    margin-left:2px;
+    margin-top:5px;
+    font-size:4px;
+    float:left;
+    }
+    .tu1 {
+     padding:2px; width:155px; height:130px;
+    border: 0px solid #000000;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    margin-left:2px;
+    margin-top:5px;
+    font-size:11px;
+    float:left;
+    }
+    .tu2 {
+        margin:2px;border:0;padding:0;
+    }
+    .imgElevatorOpen{
+	background:url('../Images/ElevatorOpenN.png') no-repeat center bottom;
+    } 
+    .imgElevatorClose{
+	background:url('../Images/ElevatorCloseN.png') no-repeat center bottom;
+    }
+    .imgElevatorFault{
+	background:url('../Images/ElevatorFaultN.png') no-repeat center bottom;
+    }
+    .imgElevatorOffLine{
+	background:url('../Images/ElevatorOffline.png') no-repeat center bottom;
+    }
+    .imgElevatorOverhaul{
+	background:url('../Images/ElevatorOverhaul.png') no-repeat center bottom;
+    }
+    .imgEscalatorOpen{
+	background:url('../Images/Escalator.png') no-repeat center bottom;
+    }
+    .imgEscalatorFault{
+	background:url('../Images/EscalatorFaultN.png') no-repeat center bottom;
+    }
+    .imgEscalatorOffLine{
+	background:url('../Images/EscalatorOffline.png') no-repeat center bottom;
+    }
+    .imgEscalatorOverhaul{
+	background:url('../Images/EscalatorOverhaul.png') no-repeat center bottom;
+    }
+    .imgSidewalkOpen{
+	background:url('../Images/Sidewalk.png') no-repeat center bottom;
+    }
+    .imgSidewalkFault{
+	background:url('../Images/SidewalkFaultN.png') no-repeat center bottom;
+    }
+    .imgSidewalkOffLine{
+	background:url('../Images/SidewalkOffline.png') no-repeat center bottom;
+    }
+    .imgSidewalkOverhaul{
+	background:url('../Images/SidewalkOverhaul.png') no-repeat center bottom;
+    }
+
+    .te {
+        width:80px;
+        font-size:11px;
+    }
+
+    #tab_box td{
+        border:1px solid #a0c6e5
+    }
+    p{	font-family:'Times New Roman';}
+    
+    #dd2{
+			/*width:100px;*/
+			height:50px;
+			background:#fefefe;
+			border:1px solid #e3ebf6;
+			position:absolute;
+			/*left:600px;
+			top:200px;*/
+		}
+    #center{
+    position:absolute;
+    left:5%;
+    top:70%;
+    margin-left:-50px;
+    margin-top:-5px;
+    }
+
+
+    </style>
+    <script>
+
+        var currPage = 1;
+
+        //定时刷新功能
+        function setAutoRefresh() {
+            if ($("#ISAutoRefresh:checked").val() == "on") {
+                var sTime = '@(dInterval)' + 's';
+                $('body').everyTime('@(dInterval)' + 's', '@(sIntervalName)', Searchcheck);
+            }
+            else $('body').stopTime('@(sIntervalName)');
+        }
+
+        $(function () {
+            var iheight = 50;
+            var iheighth = 30;
+            //初始化时时展开的
+            $("#pRealTimeMonitoring").panel({
+                height: $(window).height() - (2 * (iheight) + $('#pInfoShow').height() - iheighth)
+            });
+
+            $('#pInfoShow').panel({
+                onCollapse: function () {
+                    $("#pRealTimeMonitoring").panel({
+                        height: $(window).height() - iheight-10
+                    });
+                },
+                onExpand: function () {
+                    $("#pRealTimeMonitoring").panel({
+                        height: $(window).height() - (2 * (iheight) + $('#pInfoShow').height() - iheighth)+15
+                    });
+                }
+
+
+            });
+
+            //查询条件动态获取
+            $("#drpProvince").combobox({onChange: function (n, o) {SetComInfo(n, 'City');}});
+            $("#drpCity").combobox({ onChange: function (n, o) { SetComInfo(n, 'County'); } });
+            $("#drpCounty").combobox({ onChange: function (n, o) { SetComInfo(n, 'Village'); } });
+            $("#drpVillage").combobox({ onChange: function (n, o) { SetComInfo(n, 'State'); } });
+            $("#drpState").combobox({ onChange: function (n, o) { SetComInfo(n, 'ResidentialArea'); } });
+            $("#drpResidentialArea").combobox({ onChange: function (n, o) { SetComInfo(n, 'StreetNumber'); } });
+            
+
+
+            $("#drpProvince").combobox('setValue', "--请选择--");
+            $("#drpCity").combobox('setValue', "--请选择--");
+            $("#drpCounty").combobox('setValue', "--请选择--");
+            $("#drpVillage").combobox('setValue', "--请选择--");
+            $("#drpState").combobox('setValue', "--请选择--");
+            $("#drpResidentialArea").combobox('setValue', "--请选择--");
+            $("#drpStreetNumber").combobox('setValue', "--请选择--");
+        });
+
+        function SetComInfo(n,type)
+        {
+            var t = new Date().getTime();
+            if (n != '--请选择--') {
+                $.ajax({
+                    url: "@Html.Raw(Url.Action("GetComInfo", "MasterManage"))" + "?strType=" + type + "&InfoName=" + encodeURI(n) + "&EquipmentType=" + '@ViewBag.EquipmentType' + '&t=' + t,
+                    dataType: "text",
+                    data: { n: n },
+                    success: function (data) {
+                        if (type == 'City') $("#drpCity").combobox('setValue', "--请选择--");
+                        else if (type == 'County') $("#drpCounty").combobox('setValue', "--请选择--");
+                        else if (type == 'Village') $("#drpVillage").combobox('setValue', "--请选择--");
+                        else if (type == 'State') $("#drpState").combobox('setValue', "--请选择--");
+                        else if (type == 'ResidentialArea') $("#drpResidentialArea").combobox('setValue', "--请选择--");
+                        else if (type == 'StreetNumber') $("#drpStreetNumber").combobox('setValue', "--请选择--");
+                        var dataJson, json;
+                        var arr = new Array();
+                        arr = data.split(",");
+                        json = "[";
+                        for (var i = 0; i < arr.length; i++) {
+                            if (i == 0) {
+                                json += "{\"id\":\"\",\"text\":\"--请选择--\"},";
+                            }
+                            json += "{\"id\":\"" + arr[i] + "\",\"text\":\"" + arr[i] + "\"},";
+                        }
+                        if (json.length > 0) json = json.substring(0, json.length - 1);
+                        json += "]";
+                        dataJson = $.parseJSON(json);
+                        if (type == 'City') $("#drpCity").combobox("loadData", dataJson);
+                        else if (type == 'County') $("#drpCounty").combobox("loadData", dataJson);
+                        else if (type == 'Village') $("#drpVillage").combobox("loadData", dataJson);
+                        else if (type == 'State') $("#drpState").combobox("loadData", dataJson);
+                        else if (type == 'ResidentialArea') $("#drpResidentialArea").combobox("loadData", dataJson);
+                        else if (type == 'StreetNumber') $("#drpStreetNumber").combobox("loadData", dataJson);
+                    }
+                });
+            }
+        }
+
+        function showEquiInteInfo(EquipmentInterfaceID) {
+            //$('#dlg').dialog('open').dialog('setTitle', '设备详细信息');
+            var top = $("#tableShowSeach").offset().top + 10;
+            var left = $("#tableShowSeach").offset().left + 200;
+            $('#dlg').window('open').window('resize', { top: top, left: left });
+            $('#dlg').dialog('setTitle', '设备详细信息');
+            $("#dlg").css("height", "300px");
+            $('#dg').datagrid({
+                url: '../BusinessManage/BEquipmentInterfaceList?EquipmentInterfaceID=' + EquipmentInterfaceID,
+                height:270,
+                //toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                //onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 50,       //分页条数
+                columns: [[
+                    // 表头
+                    { field: 'ColumnOrder', title: 'ColumnOrder', hidden: true },
+                    { field: 'ColumnName', title: '参数名', sortable: true, width: 200 },
+                    { field: 'ColumnValue', title: '参数值', sortable: true, width: 200 }
+
+                ]]
+            });
+        }
+
+        var _seat = {};
+        function Searchcheck() {
+            var t = new Date().getTime();
+            $.ajax({
+                url: '../BusinessManage/JSonEquipmentStatus/' + '?EquipmentType=' + '@ViewBag.EquipmentType' + '&width=' + $("#source").width() + '&height=' + $("#source").height()
+                + '&left=' + $("#source").offset().left + '&top=' + $("#source").offset().top
+                + "&Province=" + encodeURI($("#drpProvince").combobox('getValue'))
+                + "&City=" + encodeURI($("#drpCity").combobox('getValue'))
+                + "&County=" + encodeURI($("#drpCounty").combobox('getValue'))
+                + "&Village=" + encodeURI($("#drpVillage").combobox('getValue'))
+                + "&State=" + encodeURI($("#drpState").combobox('getValue'))
+                + "&ResidentialArea=" + encodeURI($("#drpResidentialArea").combobox('getValue'))
+                + "&StreetNumber=" + encodeURI($("#drpStreetNumber").combobox('getValue'))
+                + "&EquipmentCode=" + encodeURI($("#SearchEquipmentCode").val())
+                + "&EquipmentName=" + encodeURI($("#SearchEquipmentName").val())
+                + "&ProductCode=" + encodeURI($("#SearchProductCode").val())
+                + "&CurrPage=" + encodeURI(currPage)
+                + '&t=' + t, //eval
+                async: false,//同步
+                dataType: "json",
+                error: function () {
+                    $.messager.alert('信息', '读取失败!', 'error');
+                },
+                success: function (data) {
+                    $("#source").empty();
+                    var munInfo = data.split("height~")[0];
+
+                    var arr = new Array();
+                    arr = munInfo.split("<div>");
+                    var divInfo = "";
+                    var isOne = 0;
+                    var TotalCount = "0";
+                    var OffLineCount = "0";
+                    var FaultCount = "0";
+                    var NormalCount = "0";
+                    var NormalCount = "0";
+                    var TotalPage = "0";
+                    if (munInfo.length > 0) {
+                        $.each(arr, function (i, val) {
+                            var arr1 = new Array();
+                            arr1 = val.split("^");
+                            isOne = isOne + 1;
+                            divInfo = divInfo + "<div id='" + arr1[0] + "' style='position:relative;font-size:10px;' class='" + ((isOne > 4) ? "yj2" : "yj") + "'>" +
+                            "<div class='tu " + arr1[1] + "' style='cursor:pointer;' ondblclick='showEquiInteInfo(" + ((arr1[7] == '') ? '0' : arr1[7]) + ");'></div>" +
+                            "<div class='tu1'>" +
+                            "<div class='tu2'>故障类型：<input type='text' value='" + arr1[2] + "' class='te' disabled='disabled'  /></div>" +
+                            "<div class='tu2'><span style='font-family:Times New Roman;'>设备名&nbsp;&nbsp;&nbsp;&nbsp;：</span><input type='text' value='" + arr1[3] + "' class='te' disabled='disabled'  /></div>" +
+                            "<div class='tu2'><span style='font-family:Times New Roman;'>产品号&nbsp;&nbsp;&nbsp;&nbsp;：</span><input type='text' value='" + arr1[4] + "' class='te' disabled='disabled'  /></div>" +
+                            "<div class='tu2'>运行状态：<input type='text' value='" + arr1[5] + "' class='te' disabled='disabled'  /></div>" +
+                            (('@ViewBag.EquipmentType' == '1') ?
+                            "<div class='tu2'>当前楼层：<input type='text' value='" + arr1[6] + "' class='te' disabled='disabled'  /></div>" +
+                            "<div class='tu2'><span style='font-family:Times New Roman;'>开关门&nbsp;&nbsp;&nbsp;&nbsp;：</span><input type='text' value='" + arr1[8] + "' class='te' disabled='disabled'  /></div>"
+                            : "") +
+                            "</div></div>";                           
+
+                            TotalCount = arr1[9];
+                            OffLineCount = arr1[10];
+                            FaultCount = arr1[11];
+                            NormalCount = arr1[12];
+                            TotalPage = arr1[13];
+                        });
+                    }
+
+                    divInfo += "<div style='position:absolute;top:500px;left:43%;'>" + setpaging(TotalPage) + "</div>";
+                    $("#source").append(divInfo);
+                    var vinfo = data.split("height~");
+                    $("#source").css("height", vinfo[1] + "px");
+
+                    //获取查询电梯相关地址信息
+                    var vAddress = '';
+                    vAddress += (($("#drpProvince").combobox('getValue') == '--请选择--') ? '' : $("#drpProvince").combobox('getValue'))
+                    vAddress += (($("#drpCity").combobox('getValue') == '--请选择--') ? '' : $("#drpCity").combobox('getValue'))
+                    vAddress += (($("#drpCounty").combobox('getValue') == '--请选择--') ? '' : $("#drpCounty").combobox('getValue'))
+                    vAddress += (($("#drpVillage").combobox('getValue') == '--请选择--') ? '' : $("#drpVillage").combobox('getValue'))
+                    vAddress += (($("#drpState").combobox('getValue') == '--请选择--') ? '' : $("#drpState").combobox('getValue'))
+                    vAddress += (($("#drpResidentialArea").combobox('getValue') == '--请选择--') ? '' : $("#drpResidentialArea").combobox('getValue'))
+                    vAddress += (($("#drpStreetNumber").combobox('getValue') == '--请选择--') ? '' : $("#drpStreetNumber").combobox('getValue'))                    
+                    vAddress = "当前地址： " + ((vAddress == '') ? '全部' : vAddress);
+                    $('#pRealTimeMonitoring').panel({
+                        title: getSpace(vAddress)
+                     + "<font color='#0903fd'>基本统计:" + "设备总数:" + TotalCount + "<span style='font-family:Times New Roman;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                     + "       在线设备数：" + NormalCount + "<span style='font-family:Times New Roman;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                     + "       离线设备数：" + OffLineCount + "<span style='font-family:Times New Roman;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>"
+                     + "       故障设备数：" + FaultCount + "</font>"
+                    });
+                }
+            });
+
+            function getSpace(currInfo)
+            {
+                var iTotal = 230 - (currInfo.length*4);//230
+                currInfo = currInfo + "<span style='font-family:Times New Roman;'>";
+                for (i = 0; i <= iTotal; i++)
+                {
+                    currInfo = currInfo + "&nbsp;";
+                }
+                currInfo = currInfo + "</span>";
+                return currInfo;
+            }
+        }
+
+        function clearSearch() {
+            $('#fm').form('clear');
+            $("#drpProvince").combobox('setValue', "--请选择--");
+            $("#drpCity").combobox('setValue', "--请选择--");
+            $("#drpCounty").combobox('setValue', "--请选择--");
+            $("#drpVillage").combobox('setValue', "--请选择--");
+            $("#drpState").combobox('setValue', "--请选择--");
+            $("#drpResidentialArea").combobox('setValue', "--请选择--");
+            $("#drpStreetNumber").combobox('setValue', "--请选择--");
+        }
+
+        function setpaging(pageTotal)
+        {
+            if (pageTotal == 0) pageTotal = 1;
+            var vinfo = "<button type='button' onclick='searchPage(-1," + pageTotal + ")'>上一页</button>&nbsp;&nbsp;";
+            for (i = 1; i <= pageTotal; i++) {
+                vinfo += "&nbsp;<a href='javascript:void(0)' style='cursor:pointer;' onclick='searchPage(" + i + "," + pageTotal + ");'>" + i + "</a>&nbsp;";
+            }
+            vinfo += "&nbsp;&nbsp;<button type='button' onclick='searchPage(-10000," + pageTotal + ")'>下一页</button>";
+            return vinfo;
+        }
+        function searchPage(cPage, pageTotal)
+        {
+            if (cPage == -1)//上一页
+            {
+                currPage = (currPage > 1) ? currPage - 1 : currPage;
+            }
+            else if (cPage == -10000)//下一页
+            {
+                currPage = (currPage < pageTotal) ? currPage + 1 : currPage;
+            }
+            else currPage = cPage;
+            Searchcheck();
+        }
+    </script>
+</head>
+<body>
+    <table style="width:100%" id="tableShowSeach">
+        <tr id="trShowSeach">
+            <td>
+                <div style="height:auto;">
+		            <div id="pInfoShow" class="easyui-panel"  style="overflow:auto; width:100%;padding:5px;"
+				            data-options="title:'查询操作',collapsible:true">
+                        <form id="fm" method="post" novalidate>	
+			                <table style="width:100%">
+                                <tbody>
+                                      <tr>                                        
+                                        <td  style="width:150px;"><label><span style='font-family:Times New Roman;'>省级：&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></label>
+                                            <select class="easyui-combobox"  id="drpProvince" style="width:80px;">
+                                                <option value="">--请选择--</option>
+                                                @{
+                                                    foreach (System.Data.DataRow Province_row in dtProvince.Rows)
+                                                        {
+                                                    <option value="@Province_row["Province"]">@Province_row["Province"]</option>  
+                                                        }
+                                                }
+                                            </select>                                          
+                                        </td>
+                                          <td  style="width:150px;"><label><span style='font-family:Times New Roman;'>市级：&nbsp;&nbsp;&nbsp;&nbsp;</span></label>
+                                            <select class="easyui-combobox"  id="drpCity" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                                @{
+                                                    foreach (System.Data.DataRow City_row in dtCity.Rows)
+                                                        {
+                                                    <option value="@City_row["City"]">@City_row["City"]</option>  
+                                                        }
+                                                }
+                                            </select>
+                                        </td>
+                                           <td  style="width:150px;"><label>区/县级：</label>
+                                            <select class="easyui-combobox"  id="drpCounty" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                                @{
+                                                    foreach (System.Data.DataRow County_row in dtCounty.Rows)
+                                                        {
+                                                    <option value="@County_row["County"]">@County_row["County"]</option>  
+                                                        }
+                                                }
+                                            </select>
+                                        </td>
+                                           <td  style="width:150px;"><label>乡镇：</label>
+                                            <select class="easyui-combobox"  id="drpVillage" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                            </select>
+                                        </td>
+                                           <td  style="width:150px;"><label>路段：</label>
+                                            <select class="easyui-combobox"  id="drpState" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                            </select>
+                                        </td>
+                                           <td  style="width:150px;"><label>小区：</label>
+                                            <select class="easyui-combobox"  id="drpResidentialArea" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                            </select>
+                                        </td>
+                                           <td  style="width:150px;"><label>门牌号：</label>
+                                            <select class="easyui-combobox"  id="drpStreetNumber" style="width:80px;" data-options="valueField:'id', textField:'text'">
+                                                <option value="">--请选择--</option>
+                                            </select>
+                                        </td>
+                                        
+                                    </tr>
+                                      <tr>
+                                          <td style="width:150px;">
+                                            <label>设备编号：</label>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 80px;" type="text" id="SearchEquipmentCode" name="SearchEquipmentCode" />
+                                        </td>
+                                        <td style="width:150px;"><label>设备名：</label>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 80px;" type="text" id="SearchEquipmentName" name="SearchEquipmentName" />
+                                        </td>
+                                         <td style="width:150px;"><label><span style='font-family:Times New Roman;'>设备号：&nbsp;</span></label>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 80px;" type="text" id="SearchProductCode" name="SearchProductCode" />
+                                        </td>
+
+                                          <td colspan="3">
+                                            <a id="btnSearch" class="easyui-linkbutton" icon="icon-search" href="javascript:void(0)" onclick="Searchcheck('1')">查询</a>
+                                              &nbsp;&nbsp;&nbsp;&nbsp; 
+                                            <a id="btnClear" class="easyui-linkbutton" icon="icon-clear" href="javascript:void(0)" onclick="clearSearch()" >清空</a> 
+                                        </td>
+                                        <td><input type="checkbox" name="ISAutoRefresh" id="ISAutoRefresh" onchange="setAutoRefresh()"  /><label>是否自动刷新</label></td>
+                                      </tr>
+                                </tbody>
+                            </table>
+                         </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div style="height:auto;">
+		            <div id="pRealTimeMonitoring" class="easyui-panel"  style="overflow:auto; width:100%;padding:5px;"
+				            data-options="title:' ',collapsible:true">
+                        <div id="source" style="height:360px;padding:5px;"></div> 
+                    </div>
+                </div>
+            </td>
+         </tr>
+    </table> 
+    <!--Mgr窗体-->
+<div id="dlg" class="easyui-dialog" closed="true" buttons="#dlg-buttons" style="width:500px;">    
+	<div id="pInfoTransmitShow" class="easyui-panel"  style="overflow:auto;"
+				            data-options="title:'报文详细',collapsible:true">
+        <table id="dg" style="overflow-y: hidden;width:100%;"  sortName= "ColumnOrder"></table>                      
+    </div>
+</div>
+<div id="dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave">确定</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">关闭</a>
+</div>
+
+    
+</body>
+</html>

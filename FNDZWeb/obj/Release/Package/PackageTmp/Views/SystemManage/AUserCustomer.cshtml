@@ -1,0 +1,224 @@
+﻿@{
+    System.Data.DataTable dtRoleFunction_Add = Admin.EntityDefinitions.ARoleFunctionRule.GetRoleFunctionBy("T0104", ViewBag.LogonUserCode);
+    System.Data.DataTable dtRoleFunction_Del = Admin.EntityDefinitions.ARoleFunctionRule.GetRoleFunctionBy("T0105", ViewBag.LogonUserCode);
+    Layout = null;
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="AUserCustomer_tb">
+        <a id="btn_Rptadd" href="#" class="easyui-linkbutton"  @(dtRoleFunction_Add.Rows.Count==0 ? "disabled=\"disabled\"" : "")  data-options="iconCls:'icon-add',plain:true">添加</a>
+        <a id="btn_Rptdel" href="#" class="easyui-linkbutton"  @(dtRoleFunction_Del.Rows.Count==0 ? "disabled=\"disabled\"" : "")  data-options="iconCls:'icon-cancel',plain:true">删除</a>
+    </div>
+    <form id="AUserCustomerForm" method="post"> 
+        <table id="AUserCustomer_dg" ></table>
+    </form>
+    
+</div>
+<script>
+    function formatCustomerCode(row) {
+        var s = '<span style="font-weight:bold">' + row.CustomerCode + '</span><br/>' +
+                 '<span style="color:#888">' + row.CustomerName + '</span>'
+        return s;
+    }
+    $(function () {
+
+        if ('@dtRoleFunction_Del.Rows.Count' > 0) {
+            //删除行
+            $('#btn_Rptdel').click(function () {
+                reportdelete();
+            });
+        }
+        if ('@dtRoleFunction_Add.Rows.Count' > 0) {
+            //添加行
+            $('#btn_Rptadd').click(function () {
+                reportadd();
+            });
+        }
+    });
+
+    $('#AUserCustomer_dg').datagrid({
+        url: '@Html.Raw(Url.Action("GetAUserCustomerData", "SystemManage", new { UserCode = ViewBag.UserCode }))',
+        //width: 550,
+        height: 350,
+        onClickRow: onClickRow,
+        rownumbers: true,
+        checkbox: true,
+        toolbar: '#AUserCustomer_tb',
+        remoteSort: false,
+        columns: [
+            [
+                { field: 'ck', checkbox: true },
+                {
+                    title: '客户编号', field: 'UserCustomerCode', width: 160, align: 'center', editor: {
+                        type: 'combobox',
+                        options: {
+                            valueField: 'CustomerCode',
+                            textField: 'CustomerCode',
+                            required: true,
+                            url: '@Html.Raw(Url.Action("GetACustomerData", "SystemManage", new {  }))',
+                            panelHeight: 200,
+                            panelWidth: 400,
+                            formatter: formatCustomerCode,
+                            onChange: function (newValue) {
+                                if (newValue) {
+                                    if (editIndex == undefined) { return true; }
+                                    var edCode = $('#AUserCustomer_dg').datagrid('getEditor', { index: editIndex, field: 'UserCustomerCode' });
+                                    var ed = $('#AUserCustomer_dg').datagrid('getEditor', { index: editIndex, field: 'CustomerName' });
+                                    if (edCode && ed) {
+                                        var flag = false;
+                                        var s = $(edCode.target).combobox("getData");
+                                        for (var i = 0; i < s.length; i++) {
+                                            if (newValue == s[i].CustomerCode) {
+                                                flag = true;
+                                                $(ed.target).val(s[i].CustomerName);                                                
+                                                break;
+                                            }
+                                        }
+                                        if (!flag)
+                                            $(ed.target).val("");
+
+                                    }
+                                }
+                            },
+                            filter: function (q, row) {
+                                return row.CustomerCode.toLowerCase().indexOf(q.toLowerCase()) >= 0 || row.CustomerName.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+                            }
+                        }
+                    }, sortable: true
+                },
+                { title: '客户名称', field: 'CustomerName', width: 250, sortable: true, editor: 'text' },
+                {
+                    title: '是否显示', field: 'activeShow', width: 80, align: 'center', sortable: true,
+                    editor: {
+                        type: 'checkbox',
+                        options: {
+                            on: '是',
+                            off: '否'
+                        }
+                    }
+                }
+                ,
+                {
+                    title: '是否默认客户', field: 'isDefaultShow', width: 80, align: 'center', sortable: true,
+                    editor: {
+                        type: 'checkbox',
+                        options: {
+                            on: '是',
+                            off: '否'
+                        }
+                    }
+                }
+            ]
+        ]
+
+    });
+
+           function usercustomersave() {
+               if (endreportEditing()) {
+
+                   //验证默认公司
+                   var pisDefaultShow = '否';
+                   var rows = $("#AUserCustomer_dg").datagrid("getRows");
+                   for (var i = 0; i < rows.length; i++) {
+                       if (rows[i]["isDefaultShow"] == '是' && pisDefaultShow == '是') {
+                           $.messager.alert('错误', '是能选择一条默认客户');
+                           return;
+                       }
+                     pisDefaultShow = rows[i]["isDefaultShow"];
+                   }
+
+
+                    var inserted = obj.datagrid('getChanges', "inserted");
+                    var updated = obj.datagrid('getChanges', "updated");
+                    var deleted = obj.datagrid('getChanges', "deleted");
+                    var effectRow = new Object();
+                    $.ajax({
+                        url: '@Html.Raw(Url.Action("SaveAUserCustomer", "SystemManage", new { UserCode = ViewBag.UserCode }))',
+                type: 'POST',
+                data: { InsertContent: JSON.stringify(inserted), UpdateContent: JSON.stringify(updated), DeleteContent: JSON.stringify(deleted) },
+                error: function () { $.messager.alert('错误', '不知道的错误'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '保存成功');
+                        $('#AUserCustomer_dg').datagrid('acceptChanges');
+                        $('#AUserCustomer_dg').datagrid('reload');
+                    }
+                    else {
+                        $.messager.alert('错误', result);
+                    }
+                }
+            });
+            }
+        }
+
+        function getChanges() {
+            var rows = obj.datagrid('getChanges');
+            console.log(rows);
+        }
+
+
+        function reportadd() {
+            if (endreportEditing()) {
+                //如果有默认值的话 你可以这样写
+                //obj.datagrid('appendRow',{UnitPrice1:12.5,AdvRcv:true});
+                //追加一行空行
+                obj.datagrid('appendRow', {});
+                editIndex = obj.datagrid('getRows').length - 1;
+                obj.datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+                var editors = $('#AUserCustomer_dg').datagrid('getEditors', editIndex);
+                var CustomerNameEditor = editors[1];
+                $(CustomerNameEditor.target).attr('disabled', true);
+            }
+        }
+
+        function reportdelete() {
+            //获取选中的行
+            var rows = obj.datagrid('getSelections');
+            if (rows.length == 0) {
+                $.messager.alert('提示', '请选择数据');
+            } else {
+                //创建数组
+                var code = [];
+                for (var i = 0; i < rows.length; i++) {
+                    // 获取行
+                    var row = rows[i];
+                    // 获取行的下标
+                    var index = obj.datagrid('getRowIndex', row);
+                    // 删除行
+                    obj.datagrid('deleteRow', index);
+                    // 删除的行放入数组
+                    code.push(row.ChargeCode);
+                }
+            }
+        }
+
+        function onClickRow(index) {
+            if (editIndex != index && '@dtRoleFunction_Add.Rows.Count' > 0) {
+                if (endreportEditing()) {
+                    obj.datagrid('selectRow', index).datagrid('beginEdit', index);
+                    editIndex = index;
+                    var editors = $('#AUserCustomer_dg').datagrid('getEditors', index);
+                    var CustomerNameEditor = editors[1];
+                    $(CustomerNameEditor.target).attr('disabled', true);
+                } else {
+                    obj.datagrid('selectRow', editIndex);
+                }
+            }
+        }
+
+        //获取表格对象
+        var obj = $('#AUserCustomer_dg');
+        var editIndex = undefined;
+        //标示当前编辑行，提高效率，避免使用each遍历所有行来关闭正在编辑的行。
+        function endreportEditing() {
+            if (editIndex == undefined) { return true; }
+            if (obj.datagrid('validateRow', editIndex)) {
+                obj.datagrid('endEdit', editIndex);
+                editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+</script>

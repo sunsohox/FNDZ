@@ -1,0 +1,211 @@
+﻿@{
+    Admin.EntityDAO.AUserData.AUserRow row = (Admin.EntityDAO.AUserData.AUserRow)ViewBag.UserData;
+    Admin.EntityDAO.ARoleData dsARoleData = Admin.EntityDefinitions.ARoleRule.GetRoleData();
+    System.Data.DataTable dtSelectedRole = Admin.EntityDefinitions.AUserRule.GetUserRoleByUser((ViewBag.New == "Y") ? "" : row.UserCode, true);
+    string selectedRole = ",";
+    foreach (System.Data.DataRow selectRow in dtSelectedRole.Rows)
+    {
+        selectedRole += selectRow["RoleCode"];
+        selectedRole += ",";
+    }
+    //获取当前登陆用户是否具有修改角色功能
+    System.Data.DataTable dtRoleFunction = Admin.EntityDefinitions.ARoleFunctionRule.GetRoleFunctionBy("T0103", ViewBag.LogonUserCode);
+    Layout = null;
+    
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+<div class="easyui-layout" data-options="fit:true" id="UserMgr">
+    <div data-options="region:'center'" style="padding: 10px;">
+        <div class="easyui-tabs" data-options="plain:true" style="padding: 5px" id="c_utabs">
+            <div title="用户信息" style="padding: 5px; overflow: auto">
+                <div class="easyui-accordion acc_box" style="height: auto;">
+                    <form id="ff" method="post">
+                        <table class="default-tab1">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="display:none">
+                                        <input type="text" id="HideUserCode"  name="HideUserCode" value="@ViewBag.NUserCode"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:120px;"><label>用户代码</label></td>
+                                    <td><input class="easyui-validatebox  textbox"  data-options="required:true" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="UserCode" name="UserCode" value="@ViewBag.NUserCode" />
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>用户名称</label></td>
+                                    <td><input class="easyui-validatebox  textbox "  data-options="required:true" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="UserName" name="UserName" value="@((ViewBag.UserCode=="")?"":@row.UserName)" />
+
+                                    </td>
+                                </tr>
+           
+                                <tr>
+                                    <td><label>电子邮箱</label></td>
+                                    <td><input class="easyui-validatebox textbox" data-options="validType:'email'" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="EmailAddr" name="EmailAddr"  value="@((ViewBag.UserCode=="")?"":@row.EmailAddr)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>密码</label></td>
+                                    <td><input class="easyui-validatebox textbox  " data-options="required:true" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Password" name="Password"  value="@((ViewBag.UserCode=="")?"":@row.Password)"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label>备注</label></td>
+                                    <td><textarea class="easyui-validatebox"  style="height:60px;width:156px;" name="Remark" id="Remark" text="@((ViewBag.UserCode=="")?"":@row.Remark)"></textarea>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>电话</label></td>
+                                    <td><input class="easyui-validatebox textbox " style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Phone" name="Phone" value="@((ViewBag.UserCode=="")?"":@row.Phone)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>手机</label></td>
+                                    <td><input class="easyui-numberbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Mobile" name="Mobile" value="@((ViewBag.UserCode=="")?"":@row.Mobile)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>部门</label></td>
+                                    <td><input class="easyui-validatebox textbox"  style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Department" name="Department"  value="@((ViewBag.UserCode=="")?"":@row.Department)"/></td>
+                                </tr>
+                                <tr>
+                                    <td><label>是否禁用</label></td>
+                                    <td>
+                                        <input class="easyui-validatebox textbox" type="checkbox" name="Active" id="Active"   />
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>角色选择</label></td>
+                                    <td >
+                                        @{
+                                            foreach (Admin.EntityDAO.ARoleData.ARoleRow rowRole in dsARoleData.ARole.Rows)
+                                            {
+                                            <input id="ur_@rowRole["RoleCode"]" type="checkbox" name ="UserRole" @(dtRoleFunction.Rows.Count==0 ? "disabled=\"disabled\"" : "") @(selectedRole.Contains("," + rowRole["RoleCode"] + ",") ? "checked=\"checked\"" : "")/>
+                                            <label for="ur_@rowRole["RoleCode"]">@rowRole["RoleName"]</label>           
+                
+                                            }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div title="用户可访问客户" style="padding: 5px;" id="UserCustomerBlock" ></div>
+            <div title="用户设备" style="padding: 5px;" id="UserEquipmentBlock"></div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align: right; padding: 5px;">
+        <a id="btn-save" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+        <a id="btn-cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="windowclose()">关闭</a>
+    </div>
+</div>
+
+
+<div data-options="region:'south',border:false" style="text-align: right; padding: 5px;">
+</div>
+<script>
+    $(function () {
+        if ('@ViewBag.New' == 'Y') {
+            $("#ur_guest").attr("checked", true);
+            $('#btn-save').linkbutton({ text: '新建' });
+        }
+        else {
+            $('#UserCode').attr("readonly", "readonly");
+            $("#UserCode").css({ "backgroundColor": "#fafafa" });
+            if ('@((ViewBag.UserCode=="" || @row.Active==0)?"":"check")'=='check')
+                $("#Active").attr("checked", true);
+            $('#btn-save').linkbutton({ text: '保存' });
+
+        }
+    });
+    var valueUserRole;
+    function GetUserRole() {
+        valueUserRole = '';
+        $("input:checkbox").each(function () {
+            if ($(this).attr('id').toString().indexOf('ur_') != -1 && $(this).prop('checked') == true)
+                valueUserRole = valueUserRole + $(this).attr('id').replace('ur_', '') + '~'
+                
+        });
+        if (valueUserRole.length > 0) valueUserRole = valueUserRole.substring(0, valueUserRole.length-1);
+    }
+
+    function usersave() {
+        GetUserRole();
+        $('#ff').form('submit', {
+            url: '@Url.Action("SaveUserMgr", "SystemManage")' + "?isNew=" + '@ViewBag.New' + "&CuUserRole=" + valueUserRole,
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                if (result == 'ok') {
+                    $.messager.alert("操作", "操作成功！");
+                    $('#c_utabs').tabs('enableTab', 1);
+                    $('#c_utabs').tabs('enableTab', 2);
+                    $('#HideUserCode').val($('#UserCode').val());
+                    $('#btn-save').linkbutton({ text: '保存' });
+                    
+                }
+                else {
+                    $.messager.alert("操作", result);
+                    return;
+                }
+                $('#dg').datagrid('reload');
+
+            }
+        });
+    }
+    $('#c_utabs').tabs({
+        onSelect: function (title, index) {
+            var tab = $('#c_utabs').tabs('getSelected');
+            if (index == 0) {
+                $('#btn-save').css('display', 'inline-block');
+            }
+            if (index == 1) {
+                if ($('#HideUserCode').val() == '') $('#btn-save').css('display', 'none');
+                else $('#btn-save').css('display', 'inline-block');
+                var url = '@Url.Action("AUserCustomer", "SystemManage", new { })' + '?UserCode=' + $('#HideUserCode').val();
+                $('#c_utabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: url
+                    }
+                });
+            }
+            else if (index == 2) {
+                if ($('#HideUserCode').val() == '') $('#btn-save').css('display', 'none');
+                else $('#btn-save').css('display', 'inline-block');
+
+                var url = '@Url.Action("AUserEquipment", "SystemManage", new {  })' + '?UserCode=' + $('#HideUserCode').val();;
+                $('#c_utabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: url
+                    }
+                });
+            }           
+
+        }
+    });
+
+$('#btn-save').click(function () {
+    var tab = $('#c_utabs').tabs("getSelected");
+    var index = $('#c_utabs').tabs('getTabIndex', tab);
+    if (index == 0) {
+        
+        usersave();
+    }
+    if (index == 1) {
+        usercustomersave();
+    }
+    if (index == 2) {
+
+        userequipmentsave();
+    }
+    
+});
+
+function windowclose() {
+    $('#UserMgr').parent().window('close');
+}
+</script>

@@ -1,0 +1,312 @@
+﻿@{
+    System.Data.DataTable dtCustomer = Admin.EntityDefinitions.ACustomerUserRule.GetACustomerUserByCode(ViewBag.UserCode);
+    string cDefaultCustomer = (dtCustomer.Rows.Count>0)?(dtCustomer.Select("IsDefault='1'").Length > 0) ? dtCustomer.Select("IsDefault='1'")[0]["CustomerCode"].ToString() : dtCustomer.Rows[0]["CustomerCode"].ToString():"";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width"  charset="UTF-8" />
+    <title>电梯远程监控系统(默认首页)</title>
+    <link href="~/favicon1.ico" rel="shortcut icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/black/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Css/style.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+   <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript">
+        var _menus = {};
+        function getMenus() {
+            var t = new Date().getTime();
+            $.ajax({//getJSON ajax        
+                type: 'GET',
+                url: '../Home/JSonMenu/' + '?t=' + t, //eval
+                async: false,//同步
+                dataType: "json",
+                error: function () {
+                    $.messager.alert('基本权限管理系统', '目前网络繁忙,请稍候在试!', 'error');
+                },
+                success: function (data) {
+                    if (data != "") {
+                        _menus = eval('(' + data + ')'); //不可缺少，js中json转换                  
+                        if (_menus != null) {
+                            InitLeftMenu();
+                            tabClose();
+                            tabCloseEven();
+                        }
+                    }
+                    addTab('欢迎光临', 'DefaultShow', '');
+                    
+                }
+            });
+        }       
+
+        
+        //设置登录窗口
+        function openPwd() {
+
+            $('#w').window({
+                title: '修改密码',
+                width: 330,
+                modal: true,
+                shadow: true,
+                closed: true,
+                height: 250,
+                resizable: false
+            });
+        }
+        //关闭登录窗口
+        function closePwd() {
+            $('#w').window('close');
+        }
+
+
+
+        //修改密码
+        function serverLogin() {
+            var $currpass = $('#txtCurrPass');
+            var $newpass = $('#txtNewPass');
+            var $rePass = $('#txtRePass');
+
+            if ($currpass.val() == '') {
+                msgShow('系统提示', '请输入当前密码！', 'warning');
+                return false;
+            }
+            if ($newpass.val() == '') {
+                msgShow('系统提示', '请输入密码！', 'warning');
+                return false;
+            }
+            if ($rePass.val() == '') {
+                msgShow('系统提示', '请在一次输入密码！', 'warning');
+                return false;
+            }
+
+            if ($newpass.val() != $rePass.val()) {
+                msgShow('系统提示', '两次密码不一至！请重新输入', 'warning');
+                return false;
+            }
+
+            var t = new Date().getTime();
+            $.ajax({
+                url: '../Home/ModifyPass/' + '?currPass=' + $currpass.val() + '&newPass=' + $newpass.val() + '&t=' + t,
+                dataType: "text",
+                data: {},
+                success: function (data) {
+                    if (data == 'ok')
+                    {
+                        $('#txtCurrPass').val('');
+                        $('#txtNewPass').val('');
+                        $('#txtRePass').val('');
+
+                        msgShow('系统提示', '恭喜，密码修改成功！', 'info');
+                        $('#w').dialog('close'); 	// 关闭弹出框
+                    }
+                    else msgShow('系统提示', data, 'info');
+                }
+            });
+
+            //$.post('../ajax/editpassword.ashx?newpass=' + $newpass.val(), function (msg) {
+            //    msgShow('系统提示', '恭喜，密码修改成功！<br>您的新密码为：' + msg, 'info');
+            //    $newpass.val('');
+            //    $rePass.val('');
+            //    close();
+            //})
+
+            
+        }
+
+        $(function () {
+            getMenus();//添加菜单
+            openPwd();
+
+            $('#editpass').click(function () {
+                $('#w').window('open');
+            });
+
+            $('#btnEp').click(function () {
+                serverLogin();
+            });
+
+            $('#btnCancel').click(function () { closePwd(); })
+
+            $('#loginOut').click(function () {
+                $.messager.confirm('系统提示', '您确定要退出本次登录吗?', function (r) {
+
+                    if (r) {
+                        logout();
+                    }
+                });
+            })
+
+            $('#currCustomer').change(function () {
+                var mydate = new Date();
+                var t = mydate.toLocaleString();
+                $.ajax({
+                    url: '@Html.Raw(Url.Action("SetCustomer", "Home"))' + "?CustomerCode=" + $('#currCustomer').val()+"&t=" + mydate.toLocaleString(),
+                    success: function () {
+                        $(".tabs li").each(function (index, obj) {
+                            //获取所有可关闭的选项卡
+                            var tab = $(".tabs-closable", this).text();
+                            $(".easyui-tabs").tabs('close', tab);
+                        });
+                    }
+                });
+            });
+
+            @*$("#currCustomer").combobox({
+                onChange: function (n, o) {
+                    $.ajax({
+                        url: '@Html.Raw(Url.Action("SetCustomer", "Home"))' + "?CustomerCode=" + n,
+                        success: function () {
+                            location.reload();
+                        }
+                    });
+                }
+            });*@
+
+            ///设定默认客户
+            if (parseInt('@cDefaultCustomer.Length') > 0) {
+                $("#currCustomer").val('@cDefaultCustomer');
+                var mydate = new Date();
+                var t = mydate.toLocaleString();
+                $.ajax({
+                    url: '@Html.Raw(Url.Action("SetCustomer", "Home"))' + "?CustomerCode=" + '@cDefaultCustomer' + "&t=" + mydate.toLocaleString(),
+                    success: function () {
+                        $(".tabs li").each(function (index, obj) {
+                            //获取所有可关闭的选项卡
+                            var tab = $(".tabs-closable", this).text();
+                            $(".easyui-tabs").tabs('close', tab);
+                        });
+                    }
+                });
+            }
+
+            
+        });
+
+        function logout() {
+            var mydate = new Date();
+            var t = mydate.toLocaleString();
+            $.ajax({
+                url: '@Html.Raw(Url.Action("Logout", "Home"))' + "?t=" + mydate.toLocaleString(),
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+
+        function toggle(_this,name)
+        {
+            
+            var img = _this.getElementsByTagName("img")[0];
+            if (_this.state && _this.state == 'out') {
+                img.src = "../Images/" + name + ".png";
+                _this.state = 'over'
+            } else {
+                img.src = "../Images/" + name + "1.png";
+                _this.state = 'out'
+            }
+        }
+
+
+        function onChangeTheme(theme) {
+            $.ajax({
+                url: '@Html.Raw(Url.Action("SetLanguageTheme", "Home"))' + "?Theme=" + theme,
+                success: function () {
+                    location.reload();
+                }
+            });
+
+        }
+
+
+
+    </script>     
+    <script type="text/javascript" src="../Scripts/outlook2.js"></script>
+
+</head>
+<body class="easyui-layout" style="overflow-y: hidden"  scroll="no">
+<noscript>
+    <div style="position:absolute; z-index:100000; height:2046px;top:0;left:0; width:100%; background:#fff; text-align:center;">
+        <img src="../Images/noscript.gif" alt='抱歉，请开启脚本支持！' />
+    </div>
+</noscript>
+
+<div data-options="region:'north',split:false" style="overflow: hidden;height: 67px;line-height: 62px;background-color:#29b2e6"> 
+    <span style="float:right; padding-right:20px;">
+        <img style="vertical-align:middle" src="../Images/admin4.png"/>
+        <select style="width: 120px"  id="currCustomer">
+            @{
+                foreach (System.Data.DataRow Customer_row in dtCustomer.Rows)
+                    {
+                <option value="@Customer_row["CustomerCode"]">@Customer_row["CustomerName"]</option>  
+                    }
+            }
+        </select>
+
+        <img style="vertical-align:middle" src="../Images/admin3.png"/>
+        <span style="margin-right: 20px;font-family:'Microsoft YaHei';font-size:15px;text-align:center;color:white;">@ViewBag.UserCode</span>
+        <a href="#" id="editpass" onmouseover="toggle(this,'pass')" onmouseout="toggle(this,'pass')"><img style="vertical-align:middle;border:none;"  src="../Images/pass.png"/></a>
+        <a href="#" id="help" onmouseover="toggle(this,'help')" onmouseout="toggle(this,'help')"><img style="vertical-align:middle;border:none;"  src="../Images/help.png"/></a>
+        <a href="#" id="loginOut" onmouseover="toggle(this,'Colse')" onmouseout="toggle(this,'Colse')"><img style="vertical-align:middle;border:none;" src="../Images/Colse.png"/></a>
+    </span>    
+    <span style="padding-left:10px;float:left;margin-top: 10px">
+        <img src="../Images/log.png"/>
+    </span>
+    @*<span style="display:block; text-align:center;font-size:20px;font-weight:bold;font-family:'Microsoft YaHei'">标 准 学 分 计 算 与 转 移 平 台 </span>*@   
+
+@*    <span style="float:right; padding-right:20px;">
+        <span style="margin-right: 20px;font-weight: 700">@ViewBag.UserCode</span>        
+        <a href="#" id="editpass">修改密码</a>
+        <a href="#" id="loginOut">安全退出</a>
+    </span>    
+    <span style="padding-left:10px">
+        <img src="../Images/adminlogo2.png"/>
+    </span>*@
+</div>
+<div  region="west" hide="true" split="true" title=" " style="width:180px;" id="west" >
+    <div id="nav" class="easyui-accordion" fit="true" border="false">
+        <!--  导航内容 -->
+
+    </div>
+
+</div>
+<div id="mainPanle" region="center" style="background: #eee; overflow-y:hidden">
+    <div id="tabs" class="easyui-tabs" style="background-color:red;"  fit="true" border="false" >
+
+    </div>
+</div>
+
+
+<!--修改密码窗口-->
+<div id="w" class="easyui-window" title="修改密码" collapsible="false" minimizable="false" closed="true"
+        maximizable="false" icon="icon-save"  style="width: 300px; height: 270px; padding: 5px;
+        background: #fafafa;">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px; background: #fff; border: 1px solid #ccc; color:#030303">
+            <table cellpadding=3>
+                <tr>
+                    <td>当前密码：</td>
+                    <td><input id="txtCurrPass" type="Password" class="txt01" /></td>
+                </tr>
+                <tr>
+                    <td>新密码：</td>
+                    <td><input id="txtNewPass" type="Password" class="txt01" /></td>
+                </tr>
+                <tr>
+                    <td>确认密码：</td>
+                    <td><input id="txtRePass" type="Password" class="txt01" /></td>
+                </tr>
+            </table>
+        </div>
+        <div region="south" border="false" style="text-align: right;margin-top: 5px">
+            <a id="btnEp" class="easyui-linkbutton"  icon="icon-ok" href="javascript:void(0)" >确定</a> 
+                <a id="btnCancel" class="easyui-linkbutton" icon="icon-cancel" href="javascript:void(0)">取消</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

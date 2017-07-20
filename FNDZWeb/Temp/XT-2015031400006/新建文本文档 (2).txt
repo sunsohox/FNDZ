@@ -1,0 +1,232 @@
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>中国电信-维护工单管理系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+    <script>
+        $(function () {
+            $('#dg').datagrid({
+                url: '/MasterManage/MBackupDeviceList/',
+                toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 20,       //分页条数
+                columns: [[
+                    // 表头
+                    { field: 'ID', title: 'ID', hidden: true },
+                    { field: 'DeviceNo', title: '设备编号', sortable: true, width: 100 },
+                    { field: 'DeviceName', title: '设备名称', sortable: true, width: 200 },
+                    { field: 'ISUse', title: '是否使用', sortable: true, width: 100 },
+                    { field: 'CreatBy', title: '创建人', sortable: true, width: 100 },
+                    {
+                        field: 'CreatOn', title: '创建时间', sortable: true, width: 150,
+                        formatter: function (date) {
+                            var pa = /.*\((.*)\)/;
+                            var unixtime = date.match(pa)[1].substring(0, 10);
+                            return getTime(unixtime);
+                        }
+                    },
+                    { field: 'UpdateBy', title: '修改人', sortable: true, width: 100 },
+                    {
+                        field: 'UpdateOn', title: '修改时间', sortable: true, width: 150,
+                        formatter: function (date) {
+                            if (date != null) {
+                                var pa = /.*\((.*)\)/;
+                                var unixtime = date.match(pa)[1].substring(0, 10);
+                                return getTime(unixtime);
+                            }
+                        }
+                    }
+                ]]
+            });
+
+            $('#export_item').click(function () {
+                Save_Excel();
+            });
+
+            function onDblClickRow(rowIndex, rowData) {
+                $('#dlg').dialog('open').dialog('setTitle', '修改备机信息');
+                $('#DeviceNo').attr({ 'readOnly': true });
+                rowData["ISUse"] = (rowData["ISUse"] == 1) ? "on" : rowData["ISUse"];
+                $('#dlg-fm').form('load', rowData);
+                url = '/MasterManage/MBackupDeviceUpdate/' + rowIndex;
+            }
+            
+        });
+
+        //添加信息
+        var url;
+        function newInfo() {
+            $('#dlg').dialog('open').dialog('setTitle', '添加备机信息');
+            $('#DeviceNo').attr({ 'readOnly': false });
+            $('#dlg-fm').form('clear');
+            url = '/MasterManage/MBackupDeviceSave/';
+        }
+
+        //修改信息
+        function editInfo() {
+            var row = $('#dg').datagrid('getSelections');
+            if (row.length == 1) {
+                if (row[0]) {
+                    $('#dlg').dialog('open').dialog('setTitle', '修改备机信息');
+                    $('#DeviceNo').attr({ 'readOnly': true });
+                    row[0]["ISUse"] = (row[0]["ISUse"] == 1) ? "on" : row[0]["ISUse"];
+                    $('#dlg-fm').form('load', row[0]);
+                    url = '/MasterManage/MBackupDeviceUpdate/' + row.Id;
+                }
+            } else {
+                $.messager.alert("提示", "每次只能修改一条，请重选");
+                return;
+            }
+        }
+
+        //保存信息
+        function saveInfo() {
+            $('#dlg-fm').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    if (result == 'Saveok' || result == 'Updateok') {
+                        $('#dlg').dialog('close'); 	// 关闭弹出框
+                        $('#dg').datagrid('reload'); // reload the user data
+                        $.messager.alert("操作", "操作成功！");
+                    }
+                    else {
+                        $.messager.alert("操作", result);
+                        return;
+                    }
+                }
+            });
+        }
+
+        //删除
+        function removeInfo() {
+            var row = $('#dg').datagrid('getSelections');
+            if (!row || row.length == 0) {
+                $.messager.alert('提示', '请选择要删除的数据');
+                return;
+            }
+            var parm;
+            $.each(row, function (i, n) {
+                if (i == 0) {
+                    parm = n.ID;
+                }
+                else {
+                    parm += "," + n.ID;
+                }
+            });
+            if (row) {
+                $.messager.confirm('删除信息', '您确定删除此条信息吗?', function (r) {
+                    if (r) {
+                        $.post('/MasterManage/MBackupDeviceDelete/', { idList: parm }, function (result) {
+                            if (result.success) {
+                                $('#dg').datagrid('reload'); // reload the user data
+                                $.messager.alert("提示", "删除成功！");
+                            } else {
+                                $.messager.alert('提示', '删除失败，请检查！');
+                                return;
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }       
+
+        //条件查询
+        function Searchcheck() {
+            var keywords = $("#SearchDeviceNo").val();
+            $('#dg').datagrid('load', {
+                DeviceNo: keywords
+            });
+        }
+        function openSearch() {
+            $('#w').dialog('open').dialog('setTitle', '高级查询');
+            $("#w").panel("move", {
+                left: $('#btnSearch').offset().left,
+                top: $('#btnSearch').offset().top + 20
+            });
+            $('#fm').form('clear');
+        }
+
+        
+    </script>
+    
+</head>
+<body>
+<table id="dg" style="overflow-y: hidden;width:98%"  sortName= "DeviceNo"></table>
+<div id="tb">
+    <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-search',plain:true" id="btnSearch"  onclick="openSearch()">查询</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-add',plain:true"  onclick="newInfo()">增加</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-edit',plain:true"  onclick="editInfo()">修改</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeInfo()">删除</a>
+    <a id="export_item" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ext'" href="javascript:;">Export</a>
+</div>
+
+<!--查询条件窗口-->
+<div id="w" class="easyui-window" title="高级查询" collapsible="false" minimizable="true"
+        maximizable="false" closable="false" icon="icon-save"  style="width: 300px; height: 150px; padding: 5px;
+        background: #ffffff;" closed="true" shadow="false" draggable="false">
+    <div class="easyui-layout" fit="true">
+        <div region="center" border="false" style="padding: 10px; background: #fff; border: 1px solid #ccc;">
+            <form id="fm" method="post" novalidate>			    
+			    <div class="fitem">
+				    <label>设备编号：</label>
+				    <input type="text" name="SearchDeviceNo" id="SearchDeviceNo" class="txt01" />
+			    </div>
+		    </form>
+        </div>
+        <div region="south" border="false" style="text-align: right;margin-top: 5px">
+            <a id="btnEp" class="easyui-linkbutton" icon="icon-search" href="javascript:void(0)" onclick="Searchcheck()">确定</a> 
+            <a id="btnCancel" class="easyui-linkbutton" icon="icon-cancel" href="javascript:void(0)" onclick="javascript:$('#w').dialog('close')">取消</a>
+        </div>
+    </div>
+</div>
+
+<!--Mgr窗体-->
+<div id="dlg" class="easyui-dialog" style="width:400px;height:200px;padding:10px 20px"
+		closed="true" buttons="#dlg-buttons">
+	<form id="dlg-fm" method="post" novalidate>
+        <table>
+            <tr>
+                <td colspan="2"><input class="easyui-validatebox" type="text" data-options="required:true" style="width:150px;" name="ID" id="ID"  hidden="ture"  /></td>
+            </tr>
+            <tr>
+                <td><label>设备编号</label></td>
+                <td><input class="easyui-validatebox" type="text" data-options="required:true" style="width:150px;" name="DeviceNo" id="DeviceNo"   /></td>
+            </tr>
+            <tr>
+                <td><label>设备名称</label></td>
+                <td><input class="easyui-validatebox" type="text" data-options="required:true" style="width:150px;" name="DeviceName" id="DeviceName"   /></td>
+            </tr>
+            <tr>
+                <td><label>是否使用</label></td>
+                <td>
+                    <input class="easyui-validatebox" type="checkbox" name="ISUse" id="ISUse"  />
+
+                </td>
+            </tr>
+        </table>		
+	</form>
+</div>
+<div id="dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" onclick="saveInfo()">确定</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">关闭</a>
+</div>   
+</body>
+</html>

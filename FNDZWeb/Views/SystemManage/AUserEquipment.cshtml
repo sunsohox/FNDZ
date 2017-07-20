@@ -1,0 +1,205 @@
+﻿@{
+    
+    Layout = null;
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+<div class="easyui-layout" data-options="fit:true">
+    <div id="AUserEquipment_tb">
+        <a id="btn_addUserEquipment" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a>
+        <a id="btn_delUserEquipment" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">删除</a>
+    </div>
+    <form id="AUserEquipmentForm" method="post"> 
+        <table id="AUserEquipment_dg" ></table>
+    </form>
+    
+</div>
+<script>
+    function formatCustomerCode(row) {
+        var s = '<span style="font-weight:bold">' + row.EquipmentCode + '</span><br/>' +
+                 '<span style="color:#888">' + row.EquipmentName + '</span><br/>'+
+                 '<span style="color:#888">' + row.ProductCode + '</span><br/>' +
+                '<span style="color:#888">' + ((row.EquipmentType == '1') ? '电梯' : ((row.EquipmentType == '2') ? '扶梯' : '自动人行道')) + '</span>';
+        return s;
+    }
+    $(function () {
+
+        //删除行
+        $('#btn_delUserEquipment').click(function () {
+            UserEquipmentdelete();
+        });
+        //添加行
+        $('#btn_addUserEquipment').click(function () {
+            UserEquipmentadd();
+        });
+    });
+
+    $('#AUserEquipment_dg').datagrid({
+        url: '@Html.Raw(Url.Action("GetAUserEquipmentData", "SystemManage", new { UserCode = ViewBag.UserCode }))',
+        //width: 550,
+        height: 350,
+        onClickRow: onClickRow,
+        rownumbers: true,
+        checkbox: true,
+        toolbar: '#AUserEquipment_tb',
+        remoteSort: false,
+        columns: [
+            [
+                { field: 'ck', checkbox: true },
+                {
+                    title: '设备编号', field: 'UserEquipmentCode', width: 160, align: 'center', editor: {
+                        type: 'combobox',
+                        options: {
+                            valueField: 'EquipmentCode',
+                            textField: 'EquipmentCode',
+                            required: true,
+                            url: '@Html.Raw(Url.Action("GetAEquipmentData", "SystemManage", new { UserCode = ViewBag.UserCode }))',
+                            panelHeight: 200,
+                            panelWidth: 400,
+                            formatter: formatCustomerCode,
+                            onChange: function (newValue) {
+                                if (newValue) {
+                                    if (editIndex == undefined) { return true; }
+                                    var edCode = $('#AUserEquipment_dg').datagrid('getEditor', { index: editIndex, field: 'UserEquipmentCode' });
+                                    var ed = $('#AUserEquipment_dg').datagrid('getEditor', { index: editIndex, field: 'EquipmentName' });
+                                    var ed2 = $('#AUserEquipment_dg').datagrid('getEditor', { index: editIndex, field: 'ProductCode' });
+                                    var ed3 = $('#AUserEquipment_dg').datagrid('getEditor', { index: editIndex, field: 'EquipmentType' });
+                                    if (edCode && ed && ed2 && ed3) {
+                                        var flag = false;
+                                        var s = $(edCode.target).combobox("getData");
+                                        for (var i = 0; i < s.length; i++) {
+                                            if (newValue == s[i].EquipmentCode) {
+                                                flag = true;
+                                                $(ed.target).val(s[i].EquipmentName);
+                                                $(ed2.target).val(s[i].ProductCode);
+                                                var EquipmentTypeName
+                                                if (s[i].EquipmentType == '1') EquipmentTypeName = '电梯'
+                                                else if (s[i].EquipmentType == '2') EquipmentTypeName = '扶梯'
+                                                else if (s[i].EquipmentType == '3') EquipmentTypeName = '自动人行道'
+                                                $(ed3.target).val(EquipmentTypeName);
+                                                break;
+                                            }
+                                        }
+                                        if (!flag)
+                                            $(ed.target).val("");
+
+                                    }
+                                }
+                            },
+                            filter: function (q, row) {
+                                return row.EquipmentCode.toLowerCase().indexOf(q.toLowerCase()) >= 0 || row.EquipmentName.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+                            }
+                        }
+                    }, sortable: true
+                },
+                { title: '设备名称', field: 'EquipmentName', width: 250, sortable: true, editor: 'text' },
+                { title: '产品编号', field: 'ProductCode', width: 150, sortable: true, editor: 'text' },
+                { title: '设备类型', field: 'EquipmentType', width: 150, sortable: true, editor: 'text' }
+            ]
+        ]
+
+    });
+
+           function userequipmentsave() {
+               if (endreportEditing()) {
+                    var inserted = obj.datagrid('getChanges', "inserted");
+                    var updated = obj.datagrid('getChanges', "updated");
+                    var deleted = obj.datagrid('getChanges', "deleted");
+                    var effectRow = new Object();
+                    $.ajax({
+                        url: '@Html.Raw(Url.Action("SaveAUserEquipment", "SystemManage", new { UserCode = ViewBag.UserCode }))',
+                type: 'POST',
+                data: { InsertContent: JSON.stringify(inserted), UpdateContent: JSON.stringify(updated), DeleteContent: JSON.stringify(deleted) },
+                error: function () { $.messager.alert('错误', '不知道的错误'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '保存成功');
+                        $('#AUserEquipment_dg').datagrid('acceptChanges');
+                        $('#AUserEquipment_dg').datagrid('reload');
+                    }
+                    else {
+                        $.messager.alert('错误', result);
+                    }
+                }
+            });
+            }
+        }
+
+        function getChanges() {
+            var rows = obj.datagrid('getChanges');
+            console.log(rows);
+        }
+
+
+        function UserEquipmentadd() {
+            if (endreportEditing()) {
+                //如果有默认值的话 你可以这样写
+                //obj.datagrid('appendRow',{UnitPrice1:12.5,AdvRcv:true});
+                //追加一行空行
+                obj.datagrid('appendRow', {});
+                editIndex = obj.datagrid('getRows').length - 1;
+                obj.datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+
+                var editors = $('#AUserEquipment_dg').datagrid('getEditors', editIndex);
+                var EquipmentNameEditor = editors[1];
+                var ProductCodeEditor = editors[2];
+                var EquipmentTypeEditor = editors[3];
+                $(EquipmentNameEditor.target).attr('disabled', true);
+                $(ProductCodeEditor.target).attr('disabled', true);
+                $(EquipmentTypeEditor.target).attr('disabled', true);
+            }
+        }
+
+        function UserEquipmentdelete() {
+            //获取选中的行
+            var rows = obj.datagrid('getSelections');
+            if (rows.length == 0) {
+                $.messager.alert('提示', '请选择数据');
+            } else {
+                //创建数组
+                var code = [];
+                for (var i = 0; i < rows.length; i++) {
+                    // 获取行
+                    var row = rows[i];
+                    // 获取行的下标
+                    var index = obj.datagrid('getRowIndex', row);
+                    // 删除行
+                    obj.datagrid('deleteRow', index);
+                    // 删除的行放入数组
+                    code.push(row.ChargeCode);
+                }
+            }
+        }
+
+        function onClickRow(index) {
+            if (editIndex != index) {
+                if (endreportEditing()) {
+                    obj.datagrid('selectRow', index).datagrid('beginEdit', index);
+                    editIndex = index;
+                    var editors = $('#AUserEquipment_dg').datagrid('getEditors', index);
+                    var EquipmentNameEditor = editors[1];
+                    var ProductCodeEditor = editors[2];
+                    var EquipmentTypeEditor = editors[3];
+                    $(EquipmentNameEditor.target).attr('disabled', true);
+                    $(ProductCodeEditor.target).attr('disabled', true);
+                    $(EquipmentTypeEditor.target).attr('disabled', true);
+                } else {
+                    obj.datagrid('selectRow', editIndex);
+                }
+            }
+        }
+
+        //获取表格对象
+        var obj = $('#AUserEquipment_dg');
+        var editIndex = undefined;
+        //标示当前编辑行，提高效率，避免使用each遍历所有行来关闭正在编辑的行。
+        function endreportEditing() {
+            if (editIndex == undefined) { return true; }
+            if (obj.datagrid('validateRow', editIndex)) {
+                obj.datagrid('endEdit', editIndex);
+                editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+</script>

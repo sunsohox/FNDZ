@@ -1,0 +1,345 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{253E941C-EFA6-4B33-88E6-7B865DF5F0C1}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Admin</RootNamespace>
+    <AssemblyName>Admin</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="EntityDAO\ACustomerData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACustomerData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ACustomerEquipmentData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACustomerEquipmentData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ACustomerEquipmentFaultData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACustomerEquipmentFaultData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ACustomerEquipmentFloorData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACustomerEquipmentFloorData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ACustomerUserData.cs">
+      <DependentUpon>ACustomerUserData.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EntityDAO\ACustomerUserData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ACustomerUserData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AFunctionData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AFunctionData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AListFieldData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AListFieldData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ARoleData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ARoleData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ARoleFunctionData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ARoleFunctionData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ARoleListFieldData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ARoleListFieldData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ARoleSysFunctionData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ARoleSysFunctionData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\ASysFunctionData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ASysFunctionData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AUserData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AUserData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AUserEquipmentData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AUserEquipmentData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AUserRoleData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AUserRoleData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\AUserTraceData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AUserTraceData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDefinitions\ACustomerEquipmentFaultRule.cs" />
+    <Compile Include="EntityDefinitions\ACustomerEquipmentRule.cs" />
+    <Compile Include="EntityDefinitions\ACustomerEquipmentFloorRule.cs" />
+    <Compile Include="EntityDefinitions\ACustomerRule.cs" />
+    <Compile Include="EntityDefinitions\ACustomerUserRule.cs" />
+    <Compile Include="EntityDefinitions\AListFieldRule.cs" />
+    <Compile Include="EntityDefinitions\ARoleFunctionRule.cs" />
+    <Compile Include="EntityDefinitions\ARoleListFieldRule.cs" />
+    <Compile Include="EntityDefinitions\ARoleRule.cs" />
+    <Compile Include="EntityDefinitions\ARoleSysFunctionRule.cs" />
+    <Compile Include="EntityDefinitions\ASysFunctionRule.cs" />
+    <Compile Include="EntityDefinitions\AUserEquipmentRule.cs" />
+    <Compile Include="EntityDefinitions\AUserRule.cs" />
+    <Compile Include="EntityDefinitions\AUserTraceRule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="EntityDAO\ACustomerData.xsc">
+      <DependentUpon>ACustomerData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ACustomerData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ACustomerData.xss">
+      <DependentUpon>ACustomerData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentData.xsc">
+      <DependentUpon>ACustomerEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ACustomerEquipmentData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentData.xss">
+      <DependentUpon>ACustomerEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFaultData.xsc">
+      <DependentUpon>ACustomerEquipmentFaultData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFaultData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ACustomerEquipmentFaultData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFaultData.xss">
+      <DependentUpon>ACustomerEquipmentFaultData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFloorData.xsc">
+      <DependentUpon>ACustomerEquipmentFloorData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFloorData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ACustomerEquipmentFloorData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ACustomerEquipmentFloorData.xss">
+      <DependentUpon>ACustomerEquipmentFloorData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerUserData.xsc">
+      <DependentUpon>ACustomerUserData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ACustomerUserData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ACustomerUserData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ACustomerUserData.xss">
+      <DependentUpon>ACustomerUserData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AFunctionData.xsc">
+      <DependentUpon>AFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AFunctionData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AFunctionData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AFunctionData.xss">
+      <DependentUpon>AFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AListFieldData.xsc">
+      <DependentUpon>AListFieldData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AListFieldData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AListFieldData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AListFieldData.xss">
+      <DependentUpon>AListFieldData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleData.xsc">
+      <DependentUpon>ARoleData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ARoleData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ARoleData.xss">
+      <DependentUpon>ARoleData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleFunctionData.xsc">
+      <DependentUpon>ARoleFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleFunctionData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ARoleFunctionData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ARoleFunctionData.xss">
+      <DependentUpon>ARoleFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleListFieldData.xsc">
+      <DependentUpon>ARoleListFieldData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleListFieldData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ARoleListFieldData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ARoleListFieldData.xss">
+      <DependentUpon>ARoleListFieldData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleSysFunctionData.xsc">
+      <DependentUpon>ARoleSysFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ARoleSysFunctionData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ARoleSysFunctionData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ARoleSysFunctionData.xss">
+      <DependentUpon>ARoleSysFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ASysFunctionData.xsc">
+      <DependentUpon>ASysFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\ASysFunctionData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ASysFunctionData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\ASysFunctionData.xss">
+      <DependentUpon>ASysFunctionData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserData.xsc">
+      <DependentUpon>AUserData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AUserData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AUserData.xss">
+      <DependentUpon>AUserData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserEquipmentData.xsc">
+      <DependentUpon>AUserEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserEquipmentData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AUserEquipmentData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AUserEquipmentData.xss">
+      <DependentUpon>AUserEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserRoleData.xsc">
+      <DependentUpon>AUserRoleData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserRoleData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AUserRoleData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AUserRoleData.xss">
+      <DependentUpon>AUserRoleData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserTraceData.xsc">
+      <DependentUpon>AUserTraceData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\AUserTraceData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>AUserTraceData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\AUserTraceData.xss">
+      <DependentUpon>AUserTraceData.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{df66d1f2-f46a-472e-8567-9a61b33abf33}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

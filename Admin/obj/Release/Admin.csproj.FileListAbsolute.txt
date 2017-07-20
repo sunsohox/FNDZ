@@ -1,0 +1,8 @@
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\bin\Release\Admin.dll.config
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\bin\Release\Admin.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\bin\Release\Admin.pdb
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\bin\Release\Common.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\bin\Release\Common.pdb
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\obj\Release\Admin.csprojResolveAssemblyReference.cache
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\obj\Release\Admin.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Admin\obj\Release\Admin.pdb

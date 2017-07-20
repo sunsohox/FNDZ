@@ -1,0 +1,235 @@
+﻿@{
+    Master.EntityDAO.MCompanyData dsMCompanyData = Master.EntityDefinitions.MCompanyRule.GetCompanyData();
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+
+    <script>
+        var winName;
+        $(function () {
+            $('#dg').datagrid({
+                url: '../SystemManage/ACustomerList/',
+                //toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 20,       //分页条数
+                columns: [[
+                    // 表头
+                    { field: 'CustomerCode', title: '客户代码', sortable: true, width: 120 },
+                    { field: 'CustomerName', title: '客户名称', sortable: true, width: 150 },
+                    { field: 'CompanyCode', title: '公司名称', sortable: true, width: 180 },
+                    { field: 'EmailAddr', title: '邮箱', sortable: true, width: 200 },
+                    { field: 'ContactMan', title: '联系人', sortable: true, width: 100 },
+                    { field: 'Tel', title: '电话', sortable: true, width: 100 },
+                    { field: 'MobilePhone', title: '手机', sortable: true, width: 100 },
+                    { field: 'Fax', title: '传真', sortable: true, width: 100 },
+                    { field: 'Address', title: '地址', sortable: true, width: 100 },
+                    { field: 'Remark', title: '备注', sortable: true, width: 200 },
+                    { field: 'CreateBy', title: '创建人', sortable: true, width: 100 },
+                    {
+                        field: 'CreateOn', title: '创建时间', sortable: true, width: 150,
+                        formatter: function (val) {
+                            if (val != null && val != '') {
+                                var date = new Date(val);
+                                return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                            }
+
+                        }
+                    }
+                    ,
+                    { field: 'UpdateBy', title: '修改人', sortable: true, width: 100 },
+                    {
+                        field: 'UpdateOn', title: '修改时间', sortable: true, width: 150,
+                        formatter: function (val) {
+                            if (val != null && val != '') {
+                                var date = new Date(val);
+                                return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                            }
+
+                        }
+                    }
+                ]]
+            });
+
+            //双击编辑
+            function onDblClickRow(rowIndex, rowData) {                
+                showMgrWindow(rowData["CustomerCode"],"N");
+            }
+
+        });
+
+        function showMgrWindow(CustomerCode,sNew) {
+            $('#view_box').window({
+                title: ' ',
+                href: '@Html.Raw(Url.Action("ACustomerMgr", "SystemManage", new { }))' + "?CustomerCode=" + CustomerCode + "&New=" + sNew,
+            minimizable: false,
+            maximizable: false,
+            collapsible: false,
+            iconCls: '',
+            top: 0,
+            left: 0,
+            fit: true
+            //    ,
+            //height:100
+        });
+        }
+
+
+        //添加信息
+        var url;
+        function newRow() {
+            showMgrWindow("","Y");
+            //$('#dlg').dialog('open').dialog('setTitle', '添加' + winName + '信息');
+            //$('#dlg-fm').form('clear');
+            //url = '../SystemManage/ACustomerSave/';
+        }
+
+        //修改信息
+        function editRow() {
+            var row = $('#dg').datagrid('getSelections');
+            if (row.length == 1) {
+                if (row[0]) {
+                    $('#dlg').dialog('open').dialog('setTitle', '修改' + winName + '信息');
+                    $('#dlg-fm').form('load', row[0]);
+                    url = '../SystemManage/ACustomerUpdate/' + row.Id;
+                }
+            } else {
+                $.messager.alert("提示", "每次只能修改一条，请重选");
+                return;
+            }
+        }
+
+        //保存信息
+        function saveRow() {
+            $('#dlg-fm').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    if (result == 'Saveok' || result == 'Updateok') {
+                        $('#dlg').dialog('close'); 	// 关闭弹出框
+                        $('#dg').datagrid('reload'); // reload the user data
+                        $.messager.alert("操作", "操作成功！");
+                    }
+                    else {
+                        $.messager.alert("操作", result);
+                        return;
+                    }
+                }
+            });
+        }
+
+        //删除
+        function removeRow() {
+            var row = $('#dg').datagrid('getSelections');
+            if (!row || row.length == 0) {
+                $.messager.alert('提示', '请选择要删除的数据');
+                return;
+            }
+            var parm;
+            $.each(row, function (i, n) {
+                if (i == 0) {
+                    parm = n.CustomerCode;
+                }
+                else {
+                    parm += "," + n.CustomerCode;
+                }
+            });
+            if (row) {
+                $.messager.confirm('删除信息', '您确定删除此条信息吗?', function (r) {
+                    if (r) {
+                        $.post('../SystemManage/ACustomerDelete/', { idList: parm }, function (result) {
+                            if (result.success) {
+                                $('#dg').datagrid('reload'); // reload the user data
+                                $.messager.alert("提示", "删除成功！");
+                            } else {
+                                $.messager.alert('提示', '删除失败，请检查！');
+                                return;
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }
+
+        //条件查询
+        function Searchcheck() {
+            var keywords = $("#SearchCustomerCode").val();
+            $('#dg').datagrid('load', {
+                CustomerCode: keywords
+            });
+        }
+        function clearSearch() {
+            $('#fm').form('clear');
+        }
+        $(function () {
+            winName = "公司";
+            $('#btnSearch').click(function () { Searchcheck(); });
+            $('#btnClear').click(function () { clearSearch(); });
+            $('#btnAdd').click(function () { newRow(); });
+            $('#btnDel').click(function () { removeRow(); });
+            $('#btnSave').click(function () { saveRow(); });
+            $('#export_item').click(function () { Save_Excel(); });
+            //查询界面伸缩
+            SetInfoShowPosi();
+        });
+    </script>
+    
+</head>
+<body>
+    <div data-options="region:'center'" id="tab_box">
+    <table style="width:100%">
+        <tr id="trShowSeach">
+            <td>
+                <div style="height:auto;">
+		            <div id="pInfoShow" class="easyui-panel"  style="overflow:auto; width:100%;padding:10px;"
+				            data-options="title:'查询操作',collapsible:true">
+                        <form id="fm" method="post" novalidate>	
+			                <table style="width:100%">
+                                <tbody>
+                                      <tr>
+                                        <td style="width:100px;"><label>客户代码：</label></td>
+                                        <td>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 120px;" type="text" id="SearchCustomerCode" name="SearchCustomerCode" />
+                                        </td>
+                                        <td colspan="4">
+                                            <a id="btnSearch" class="easyui-linkbutton" icon="icon-search" href="javascript:void(0)">查询</a> 
+                                            <a id="btnClear" class="easyui-linkbutton" icon="icon-clear" href="javascript:void(0)" >清空</a>  &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a id="btnAdd" class="easyui-linkbutton" icon="icon-add" href="javascript:void(0)">新建</a>
+                                            <a id="btnDel" class="easyui-linkbutton" icon="icon-remove" href="javascript:void(0)" >删除</a> 
+                                            <a id="export_item" class="easyui-linkbutton" icon="icon-ext" href="javascript:void(0)">Excel导出</a> 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                         </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="dg" style="overflow-y: hidden;width:100%"  sortName= "CustomerCode"></table>
+            </td>
+         </tr>
+    </table>
+    <div id="view_box"></div>
+    </div>
+</body>
+</html>

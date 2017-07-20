@@ -1,0 +1,611 @@
+﻿---------------------------paul 2016-07-12
+alter table dbo.ACustomerEquipmentFault add [CustFaultID] [nvarchar](30) NULL
+alter table dbo.ACustomerEquipmentFloor add [CustFloorID] [nvarchar](30) NULL
+
+CREATE TABLE [dbo].[BEquipmentInterface_History](
+	[GuidID] [uniqueidentifier] NOT NULL,
+	[ID] [int] NULL,
+	[RcvID] [varchar](100) NULL,
+	[EquipmentType] [varchar](50) NULL,
+	[EquipmentCode] [varchar](50) NULL,
+	[A01] [varchar](50) NULL,
+	[A02] [varchar](50) NULL,
+	[A021] [varchar](50) NULL,
+	[A022] [varchar](50) NULL,
+	[A023] [varchar](50) NULL,
+	[A024] [varchar](50) NULL,
+	[A025] [varchar](50) NULL,
+	[A026] [varchar](50) NULL,
+	[A027] [varchar](50) NULL,
+	[A028] [varchar](50) NULL,
+	[A029] [varchar](50) NULL,
+	[A0210] [varchar](50) NULL,
+	[A0211] [varchar](50) NULL,
+	[A0212] [varchar](50) NULL,
+	[A0213] [varchar](50) NULL,
+	[A0214] [varchar](50) NULL,
+	[A0215] [varchar](50) NULL,
+	[A0216] [varchar](50) NULL,
+	[A03] [varchar](50) NULL,
+	[A04] [varchar](50) NULL,
+	[A05] [varchar](50) NULL,
+	[A06] [varchar](50) NULL,
+	[A07] [varchar](50) NULL,
+	[A08] [varchar](50) NULL,
+	[A09] [varchar](50) NULL,
+	[A10] [varchar](50) NULL,
+	[A11] [varchar](50) NULL,
+	[A12] [varchar](50) NULL,
+	[A13] [varchar](50) NULL,
+	[A14] [varchar](50) NULL,
+	[A15] [varchar](50) NULL,
+	[A16] [varchar](50) NULL,
+	[A17] [varchar](50) NULL,
+	[A18] [varchar](50) NULL,
+	[A19] [varchar](50) NULL,
+	[A20] [varchar](50) NULL,
+	[A21] [varchar](50) NULL,
+	[A22] [varchar](50) NULL,
+	[A23] [varchar](50) NULL,
+	[A24] [varchar](50) NULL,
+	[A25] [varchar](50) NULL,
+	[A26] [varchar](50) NULL,
+	[A27] [varchar](50) NULL,
+	[A28] [varchar](50) NULL,
+	[A29] [varchar](50) NULL,
+	[A30] [varchar](50) NULL,
+	[A31] [varchar](50) NULL,
+	[A32] [varchar](50) NULL,
+	[A33] [varchar](50) NULL,
+	[A34] [varchar](50) NULL,
+	[A35] [varchar](50) NULL,
+	[A36] [varchar](50) NULL,
+	[A37] [varchar](50) NULL,
+	[A38] [varchar](50) NULL,
+	[A39] [varchar](50) NULL,
+	[A40] [varchar](50) NULL,
+	[A41] [varchar](50) NULL,
+	[A42] [varchar](50) NULL,
+	[A43] [varchar](50) NULL,
+	[A44] [varchar](50) NULL,
+	[A45] [varchar](50) NULL,
+	[A46] [varchar](50) NULL,
+	[A47] [varchar](50) NULL,
+	[A48] [varchar](50) NULL,
+	[A49] [varchar](50) NULL,
+	[A50] [varchar](50) NULL,
+	[A51] [varchar](50) NULL,
+	[A52] [varchar](50) NULL,
+	[A53] [varchar](50) NULL,
+	[A54] [varchar](50) NULL,
+	[A55] [varchar](50) NULL,
+	[A56] [varchar](50) NULL,
+	[A57] [varchar](50) NULL,
+	[A58] [varchar](50) NULL,
+	[A59] [varchar](50) NULL,
+	[A60] [varchar](50) NULL,
+	[A61] [varchar](50) NULL,
+	[A62] [varchar](50) NULL,
+	[A63] [varchar](50) NULL,
+	[A64] [varchar](50) NULL,
+	[A65] [varchar](50) NULL,
+	[A66] [varchar](50) NULL,
+	[A67] [varchar](50) NULL,
+	[A68] [varchar](50) NULL,
+	[A69] [varchar](50) NULL,
+	[A70] [varchar](50) NULL,
+	[A71] [varchar](50) NULL,
+	[A72] [varchar](50) NULL,
+	[A73] [varchar](50) NULL,
+	[A74] [varchar](50) NULL,
+	[A75] [varchar](50) NULL,
+	[A76] [varchar](50) NULL,
+	[A77] [varchar](50) NULL,
+	[A78] [varchar](50) NULL,
+	[A79] [varchar](50) NULL,
+	[A80] [varchar](50) NULL,
+	[CreateBy] [nvarchar](20) NULL,
+	[CreateOn] [datetime] NULL,
+ CONSTRAINT [PK_BEquipmentInterface_History] PRIMARY KEY CLUSTERED 
+(
+	[GuidID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[BEquipmentStatus_History](
+	[GuidID] [uniqueidentifier] NOT NULL,
+	[ID] [int] NULL,
+	[EquipmentInterfaceID] [varchar](100) NULL,
+	[EquipmentType] [int] NULL,
+	[EquipmentCode] [varchar](30) NULL,
+	[EquipmentName] [varchar](50) NULL,
+	[FaultCode] [varchar](30) NULL,
+	[FaultName] [varchar](50) NULL,
+	[MotionStatus] [varchar](50) NULL,
+	[FloorCode] [varchar](30) NULL,
+	[FloorMun] [int] NULL,
+	[DoorStatus] [varchar](50) NULL,
+	[CreateBy] [nvarchar](20) NULL,
+	[CreateOn] [datetime] NULL,
+ CONSTRAINT [PK_BEquipmentStatus_History] PRIMARY KEY CLUSTERED 
+(
+	[GuidID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+CREATE TABLE [dbo].[BRcvData_History](
+	[GuidID] [uniqueidentifier] NOT NULL,
+	[ID] [int] NULL,
+	[ConnID] [varchar](100) NULL,
+	[RcvDateTime] [varchar](50) NULL,
+	[IPAddress] [varchar](50) NULL,
+	[TcpData] [varchar](500) NULL,
+	[BytesNum] [int] NULL,
+ CONSTRAINT [PK_BRcvData_History] PRIMARY KEY CLUSTERED 
+(
+	[GuidID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+---------------------------------------paul 2016-07-14
+CREATE TABLE [dbo].[AUserEquipment](
+	[UserCode] [nvarchar](30) NOT NULL,
+	[UserEquipmentCode] [nvarchar](30) NOT NULL,
+	[Remark] [nvarchar](200) NULL,
+	[CreateBy] [nvarchar](20) NULL,
+	[CreateOn] [datetime] NULL,
+	[UpdateBy] [nvarchar](20) NULL,
+	[UpdateOn] [datetime] NULL,
+ CONSTRAINT [PK_AUserEquipment] PRIMARY KEY CLUSTERED 
+(
+	[UserCode] ASC,
+	[UserEquipmentCode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+drop table dbo.ACustomerUser
+CREATE TABLE [dbo].[ACustomerUser](
+	[UserCode] [nvarchar](30) NOT NULL,
+	[UserCustomerCode] [nvarchar](30) NOT NULL,
+	[Active] [int] NULL,
+	[IsDefault] [int] NULL,
+	[Remark] [nvarchar](200) NULL,
+	[CreateBy] [nvarchar](20) NULL,
+	[CreateOn] [datetime] NULL,
+	[UpdateBy] [nvarchar](20) NULL,
+	[UpdateOn] [datetime] NULL,
+ CONSTRAINT [PK_ACustomerUser] PRIMARY KEY CLUSTERED 
+(
+	[UserCode] ASC,
+	[UserCustomerCode] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+
+insert into dbo.AFunction
+select 'T0101','Other','只查看同客户组用户'
+union
+select 'T0102','Other','只查看同客户组设备'
+
+
+--------------------------------------------paul 2016-07-15
+insert into AFunction
+select 'T0103','Other','用户角色分配'
+
+--------------------------------------------paul 2016-07-21
+insert into AFunction
+select 'T0104','Other','用户可访问客户添加'
+union
+select 'T0105','Other','用户可访问客户删除'
+
+
+
+
+
+---------------------------------------------paul 2016-08-08
+ALTER PROCEDURE [dbo].[GetEquipmentList]
+	-- Add the parameters for the stored procedure here
+	@UserCode     varchar(50), 
+	@EquipmentType     varchar(50), 
+	@EquipmentCode     varchar(50), 
+	@EquipmentName     varchar(50), 
+	@ProductCode     varchar(50), 
+	@Province     varchar(50), 
+	@City     varchar(50), 
+	@County     varchar(50), 
+	@Village    varchar(50), 
+	@State     varchar(50), 
+	@ResiAreaDirector     varchar(50), 
+	@StreetNumber     varchar(50), 
+	@Building     varchar(50), 
+	@Unit     varchar(50), 
+	@LadderNo    varchar(50),
+	@CustomerCode varchar(50),
+	@FaultTime int,--断电时间
+	@pageSize int,
+	@page int
+AS
+BEGIN
+    declare @sql varchar(4000)
+	set @sql=' IF OBJECT_ID(''tempdb..#taMEquipment'') IS NOT NULL  DROP TABLE #taMEquipment select * into #taMEquipment from dbo.MEquipment where 1=1 and EquipmentType='+@EquipmentType+' and EquipmentCode in ( select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode='''+@CustomerCode+''')'
+    if(UPPER(@UserCode)!='ADMIN') 
+    begin
+    set @sql=@sql+' and EquipmentCode in (select UserEquipmentCode from dbo.AUserEquipment where UserCode='''+@UserCode+''' and EquipmentCode in (select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode  in (select CustomerCode from dbo.ACustomerUser where UserCode='''+@UserCode+'''))'
+    end
+    
+     if(@EquipmentCode!='')  set @sql=@sql+' and EquipmentCode like ''%' + @EquipmentCode + '%'''
+     if(@EquipmentName!='')  set @sql=@sql+' and EquipmentName like ''%' + @EquipmentName + '%'''
+     if(@ProductCode!='')  set @sql=@sql+' and ProductCode like ''%' + @ProductCode + '%'''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@City!='')  set @sql=@sql+' and City='''+@City+''
+     if(@County!='')  set @sql=@sql+' and County='''+@County+''
+     if(@Village!='')  set @sql=@sql+' and Village='''+@Village+''
+     if(@State!='')  set @sql=@sql+' and State='''+@State+''
+     if(@ResiAreaDirector!='')  set @sql=@sql+' and ResiAreaDirector='''+@ResiAreaDirector+''
+     if(@StreetNumber!='')  set @sql=@sql+' and StreetNumber='''+@StreetNumber+''
+     if(@Building!='')  set @sql=@sql+' and Building='''+@Building+''
+     if(@Unit!='')  set @sql=@sql+' and Unit='''+@Unit+''
+     if(@LadderNo!='')  set @sql=@sql+' and LadderNo='''+@LadderNo+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+    
+    set @sql=@sql+' IF OBJECT_ID(''tempdb..#ta'') IS NOT NULL  DROP TABLE #ta 
+	select b.EquipmentInterfaceID, b.FaultCode, b.FaultName, b.MotionStatus, b.FloorCode, b.FloorMun, b.DoorStatus, a.EquipmentType
+	, a.EquipmentCode, a.EquipmentName,a.ProductCode,case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then case 
+	when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''
+	then ''离线'' else ''正常'' end else b.FaultName end as EquipmentStatus into #ta from dbo.MEquipment a 
+	left outer join (
+	select * from dbo.BEquipmentStatus where EquipmentCode+''~''+CONVERT(varchar(100),CreateOn, 13) in (  select EquipmentCode+''~''+CONVERT(varchar(100),
+	MAX(CreateOn), 13) from dbo.BEquipmentStatus where EquipmentCode in (select EquipmentCode from #taMEquipment)  group by EquipmentCode)  
+	) b on b.EquipmentCode=a.EquipmentCode and b.EquipmentType=a.EquipmentType 
+	where 1=1  and a.EquipmentCode in (select EquipmentCode from #taMEquipment);'
+	----统计
+	set @sql=@sql+' declare @totalpage  int,@totalcount int,@offLinecount int,@faultcount int,@normalcount int
+	 set @totalcount=(select COUNT(*) from #ta) 
+	 set @offLinecount=(select COUNT(*) from #ta where EquipmentStatus=''离线'') 
+	 set @faultcount=(select COUNT(*) from #ta where EquipmentStatus!=''离线'' and EquipmentStatus!=''正常'')
+	 set @normalcount=(select COUNT(*) from #ta where EquipmentStatus=''正常'')
+	 select @totalpage=(COUNT(''A'')/'+CAST(@pageSize as varchar)+')+case when (COUNT(''A'')%'+CAST(@pageSize as varchar)+')>0 then 1 else 0 end from #ta'
+	----统计结束
+	
+	----分页处理
+	set @sql=@sql+' declare @temp int
+	set @temp='+CAST(@pageSize as varchar)+'*('+CAST(@page as varchar)+' - 1)
+	begin
+	 select top (select '+CAST(@pageSize as varchar)+') *
+	 ,@totalcount as TotalCount,@offLinecount as OffLineCount,@faultcount as FaultCount,@normalcount as NormalCount,@totalpage as TotalPage ,Province,City,County,Village,State,ResidentialArea,StreetNumber,Unit,LadderNo
+ from #ta left outer join dbo.MEquipment a on #ta.EquipmentCode=a.EquipmentCode where #ta.EquipmentCode      
+ not in (select top (select @temp) EquipmentCode from #ta) order by #ta.EquipmentCode  
+	end'
+	
+	----分页结束
+	
+	
+	--select @sql
+	exec(@sql)
+END
+
+--------------------------------------------paul 2016-08-11
+USE [FNDZ]
+GO
+/****** Object:  StoredProcedure [dbo].[GetEquipmentList]    Script Date: 08/11/2016 15:50:01 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[GetEquipmentList]
+	-- Add the parameters for the stored procedure here
+	@UserCode     varchar(50), 
+	@EquipmentType     varchar(50), 
+	@EquipmentCode     varchar(50), 
+	@EquipmentName     varchar(50), 
+	@ProductCode     varchar(50), 
+	@Province     varchar(50), 
+	@City     varchar(50), 
+	@County     varchar(50), 
+	@Village    varchar(50), 
+	@State     varchar(50), 
+	@ResiAreaDirector     varchar(50), 
+	@StreetNumber     varchar(50), 
+	@Building     varchar(50), 
+	@Unit     varchar(50), 
+	@LadderNo    varchar(50),
+	@CustomerCode varchar(50),
+	@FaultTime int,--断电时间
+	@pageSize int,
+	@page int
+AS
+BEGIN
+    declare @sql varchar(4000)
+	set @sql=' IF OBJECT_ID(''tempdb..#taMEquipment'') IS NOT NULL  DROP TABLE #taMEquipment select * into #taMEquipment from dbo.MEquipment where 1=1 and EquipmentType='+@EquipmentType+' and EquipmentCode in ( select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode='''+@CustomerCode+''')'
+    if(UPPER(@UserCode)!='ADMIN') 
+    begin
+    set @sql=@sql+' and EquipmentCode in (select UserEquipmentCode from dbo.AUserEquipment where UserCode='''+@UserCode+''' and EquipmentCode in (select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode  in (select CustomerCode from dbo.ACustomerUser where UserCode='''+@UserCode+'''))'
+    end
+    
+     if(@EquipmentCode!='')  set @sql=@sql+' and EquipmentCode like ''%' + @EquipmentCode + '%'''
+     if(@EquipmentName!='')  set @sql=@sql+' and EquipmentName like ''%' + @EquipmentName + '%'''
+     if(@ProductCode!='')  set @sql=@sql+' and ProductCode like ''%' + @ProductCode + '%'''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@City!='')  set @sql=@sql+' and City='''+@City+''
+     if(@County!='')  set @sql=@sql+' and County='''+@County+''
+     if(@Village!='')  set @sql=@sql+' and Village='''+@Village+''
+     if(@State!='')  set @sql=@sql+' and State='''+@State+''
+     if(@ResiAreaDirector!='')  set @sql=@sql+' and ResiAreaDirector='''+@ResiAreaDirector+''
+     if(@StreetNumber!='')  set @sql=@sql+' and StreetNumber='''+@StreetNumber+''
+     if(@Building!='')  set @sql=@sql+' and Building='''+@Building+''
+     if(@Unit!='')  set @sql=@sql+' and Unit='''+@Unit+''
+     if(@LadderNo!='')  set @sql=@sql+' and LadderNo='''+@LadderNo+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+    
+ --   ,case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then case 
+	--when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''
+	--then ''离线'' else ''正常'' end else b.FaultName end as EquipmentStatus
+	
+    set @sql=@sql+' IF OBJECT_ID(''tempdb..#ta'') IS NOT NULL  DROP TABLE #ta 
+	select b.EquipmentInterfaceID, b.FaultCode, b.FaultName, b.MotionStatus, b.FloorCode, b.FloorMun, b.DoorStatus, a.EquipmentType
+	, a.EquipmentCode, a.EquipmentName,a.ProductCode
+	,case    when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''   
+	 then ''离线'' else case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then ''正常'' else b.FaultName end
+	 end as EquipmentStatus
+	 into #ta from dbo.MEquipment a 
+	left outer join (
+	select * from dbo.BEquipmentStatus where EquipmentCode+''~''+CONVERT(varchar(100),CreateOn, 13) in (  select EquipmentCode+''~''+CONVERT(varchar(100),
+	MAX(CreateOn), 13) from dbo.BEquipmentStatus where EquipmentCode in (select EquipmentCode from #taMEquipment)  group by EquipmentCode)  
+	) b on b.EquipmentCode=a.EquipmentCode and b.EquipmentType=a.EquipmentType 
+	where 1=1  and a.EquipmentCode in (select EquipmentCode from #taMEquipment);'
+	----统计
+	set @sql=@sql+' declare @totalpage  int,@totalcount int,@offLinecount int,@faultcount int,@normalcount int
+	 set @totalcount=(select COUNT(*) from #ta) 
+	 set @offLinecount=(select COUNT(*) from #ta where EquipmentStatus=''离线'') 
+	 set @faultcount=(select COUNT(*) from #ta where EquipmentStatus!=''离线'' and EquipmentStatus!=''正常'')
+	 set @normalcount=(select COUNT(*) from #ta where EquipmentStatus=''正常'')
+	 select @totalpage=(COUNT(''A'')/'+CAST(@pageSize as varchar)+')+case when (COUNT(''A'')%'+CAST(@pageSize as varchar)+')>0 then 1 else 0 end from #ta'
+	----统计结束
+	
+	----分页处理
+	set @sql=@sql+' declare @temp int
+	set @temp='+CAST(@pageSize as varchar)+'*('+CAST(@page as varchar)+' - 1)
+	begin
+	 select top (select '+CAST(@pageSize as varchar)+') *
+	 ,@totalcount as TotalCount,@offLinecount as OffLineCount,@faultcount as FaultCount,@normalcount as NormalCount,@totalpage as TotalPage ,Province,City,County,Village,State,ResidentialArea,StreetNumber,Unit,LadderNo
+ from #ta left outer join dbo.MEquipment a on #ta.EquipmentCode=a.EquipmentCode where #ta.EquipmentCode      
+ not in (select top (select @temp) EquipmentCode from #ta) order by #ta.EquipmentCode  
+	end'
+	
+	----分页结束
+	
+	
+	--select @sql
+	exec(@sql)
+END
+
+
+
+--------------------------------------------------------------------------
+ALTER PROCEDURE [dbo].[GetEquipmentList]
+	-- Add the parameters for the stored procedure here
+	@UserCode     varchar(50), 
+	@EquipmentType     varchar(50), 
+	@EquipmentCode     varchar(50), 
+	@EquipmentName     varchar(50), 
+	@ProductCode     varchar(50), 
+	@Province     varchar(50), 
+	@City     varchar(50), 
+	@County     varchar(50), 
+	@Village    varchar(50), 
+	@State     varchar(50), 
+	@ResiAreaDirector     varchar(50), 
+	@StreetNumber     varchar(50), 
+	@Building     varchar(50), 
+	@Unit     varchar(50), 
+	@LadderNo    varchar(50),
+	@CustomerCode varchar(50),
+	@FaultTime int,--断电时间
+	@pageSize int,
+	@page int
+AS
+BEGIN
+    declare @sql varchar(4000)
+	set @sql=' IF OBJECT_ID(''tempdb..#taMEquipment'') IS NOT NULL  DROP TABLE #taMEquipment select * into #taMEquipment from dbo.MEquipment where 1=1 and EquipmentType='+@EquipmentType+' and EquipmentCode in ( select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode='''+@CustomerCode+''')'
+    if(UPPER(@UserCode)!='ADMIN') 
+    begin
+    set @sql=@sql+' and EquipmentCode in (select UserEquipmentCode from dbo.AUserEquipment where UserCode='''+@UserCode+''' and EquipmentCode in (select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode  in (select CustomerCode from dbo.ACustomerUser where UserCode='''+@UserCode+'''))'
+    end
+    
+     if(@EquipmentCode!='')  set @sql=@sql+' and EquipmentCode like ''%' + @EquipmentCode + '%'''
+     if(@EquipmentName!='')  set @sql=@sql+' and EquipmentName like ''%' + @EquipmentName + '%'''
+     if(@ProductCode!='')  set @sql=@sql+' and ProductCode like ''%' + @ProductCode + '%'''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@City!='')  set @sql=@sql+' and City='''+@City+''
+     if(@County!='')  set @sql=@sql+' and County='''+@County+''
+     if(@Village!='')  set @sql=@sql+' and Village='''+@Village+''
+     if(@State!='')  set @sql=@sql+' and State='''+@State+''
+     if(@ResiAreaDirector!='')  set @sql=@sql+' and ResiAreaDirector='''+@ResiAreaDirector+''
+     if(@StreetNumber!='')  set @sql=@sql+' and StreetNumber='''+@StreetNumber+''
+     if(@Building!='')  set @sql=@sql+' and Building='''+@Building+''
+     if(@Unit!='')  set @sql=@sql+' and Unit='''+@Unit+''
+     if(@LadderNo!='')  set @sql=@sql+' and LadderNo='''+@LadderNo+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''
+    
+ --   ,case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then case 
+	--when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''
+	--then ''离线'' else ''正常'' end else b.FaultName end as EquipmentStatus
+	
+    set @sql=@sql+' IF OBJECT_ID(''tempdb..#ta'') IS NOT NULL  DROP TABLE #ta 
+	select b.EquipmentInterfaceID, b.FaultCode, b.FaultName, b.MotionStatus, b.FloorCode, b.FloorMun, b.DoorStatus, a.EquipmentType
+	, a.EquipmentCode, a.EquipmentName,a.ProductCode
+	,case    when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''   
+	 then ''离线'' else case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then ''正常'' else b.FaultName end
+	 end as EquipmentStatus
+	 into #ta from dbo.MEquipment a 
+	left outer join (
+	select * from dbo.BEquipmentStatus where EquipmentCode+''~''+CONVERT(varchar(100),CreateOn, 13) in (  select EquipmentCode+''~''+CONVERT(varchar(100),
+	MAX(CreateOn), 13) from dbo.BEquipmentStatus where EquipmentCode in (select EquipmentCode from #taMEquipment)  and  datediff(ss,ISNULL(CreateOn,DATEADD(DAY,-1,getdate())),getdate())<='''+CAST(@FaultTime as varchar)+'''    group by EquipmentCode)  
+	) b on b.EquipmentCode=a.EquipmentCode and b.EquipmentType=a.EquipmentType 
+	where 1=1  and a.EquipmentCode in (select EquipmentCode from #taMEquipment);'
+	----统计
+	set @sql=@sql+' declare @totalpage  int,@totalcount int,@offLinecount int,@faultcount int,@normalcount int
+	 set @totalcount=(select COUNT(*) from #ta) 
+	 set @offLinecount=(select COUNT(*) from #ta where EquipmentStatus=''离线'') 
+	 set @faultcount=(select COUNT(*) from #ta where EquipmentStatus!=''离线'' and EquipmentStatus!=''正常'')
+	 set @normalcount=(select COUNT(*) from #ta where EquipmentStatus=''正常'')
+	 select @totalpage=(COUNT(''A'')/'+CAST(@pageSize as varchar)+')+case when (COUNT(''A'')%'+CAST(@pageSize as varchar)+')>0 then 1 else 0 end from #ta'
+	----统计结束
+	
+	----分页处理
+	set @sql=@sql+' declare @temp int
+	set @temp='+CAST(@pageSize as varchar)+'*('+CAST(@page as varchar)+' - 1)
+	begin
+	 select top (select '+CAST(@pageSize as varchar)+') *
+	 ,@totalcount as TotalCount,@offLinecount as OffLineCount,@faultcount as FaultCount,@normalcount as NormalCount,@totalpage as TotalPage ,Province,City,County,Village,State,ResidentialArea,StreetNumber,Unit,LadderNo
+ from #ta left outer join dbo.MEquipment a on #ta.EquipmentCode=a.EquipmentCode where #ta.EquipmentCode      
+ not in (select top (select @temp) EquipmentCode from #ta) order by #ta.EquipmentCode  
+	end'
+	
+	----分页结束
+	
+	
+	--select @sql
+	exec(@sql)
+END
+
+
+------------------------------------------------Paul 2016-08-23
+alter table dbo.MFloor alter column [FloorMun] varchar(50)
+
+
+
+ALTER PROCEDURE [dbo].[GetEquipmentList]
+	-- Add the parameters for the stored procedure here
+	@UserCode     varchar(50), 
+	@EquipmentType     varchar(50), 
+	@EquipmentCode     varchar(50), 
+	@EquipmentName     varchar(50), 
+	@ProductCode     varchar(50), 
+	@Province     varchar(50), 
+	@City     varchar(50), 
+	@County     varchar(50), 
+	@Village    varchar(50), 
+	@State     varchar(50), 
+	@ResiAreaDirector     varchar(50), 
+	@StreetNumber     varchar(50), 
+	@Building     varchar(50), 
+	@Unit     varchar(50), 
+	@LadderNo    varchar(50),
+	@CustomerCode varchar(50),
+	@FaultTime int,--断电时间
+	@pageSize int,
+	@page int
+AS
+BEGIN
+    declare @sql varchar(4000)
+	set @sql=' IF OBJECT_ID(''tempdb..#taMEquipment'') IS NOT NULL  DROP TABLE #taMEquipment select * into #taMEquipment from dbo.MEquipment where 1=1 and EquipmentType='+@EquipmentType+' and EquipmentCode in ( select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode='''+@CustomerCode+''')'
+    if(UPPER(@UserCode)!='ADMIN') 
+    begin
+    set @sql=@sql+' and EquipmentCode in (select UserEquipmentCode from dbo.AUserEquipment where UserCode='''+@UserCode+''' and EquipmentCode in (select CustEquipmentCode from dbo.ACustomerEquipment where CustomerCode  in (select CustomerCode from dbo.ACustomerUser where UserCode='''+@UserCode+'''))'
+    end
+    
+     if(@EquipmentCode!='')  set @sql=@sql+' and EquipmentCode like ''%' + @EquipmentCode + '%'''
+     if(@EquipmentName!='')  set @sql=@sql+' and EquipmentName like ''%' + @EquipmentName + '%'''
+     if(@ProductCode!='')  set @sql=@sql+' and ProductCode like ''%' + @ProductCode + '%'''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''''
+     if(@City!='')  set @sql=@sql+' and City='''+@City+''''
+     if(@County!='')  set @sql=@sql+' and County='''+@County+''''
+     if(@Village!='')  set @sql=@sql+' and Village='''+@Village+''''
+     if(@State!='')  set @sql=@sql+' and State='''+@State+''''
+     if(@ResiAreaDirector!='')  set @sql=@sql+' and ResiAreaDirector='''+@ResiAreaDirector+''''
+     if(@StreetNumber!='')  set @sql=@sql+' and StreetNumber='''+@StreetNumber+''''
+     if(@Building!='')  set @sql=@sql+' and Building='''+@Building+''''
+     if(@Unit!='')  set @sql=@sql+' and Unit='''+@Unit+''''
+     if(@LadderNo!='')  set @sql=@sql+' and LadderNo='''+@LadderNo+''''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''''
+     if(@Province!='')  set @sql=@sql+' and Province='''+@Province+''''
+    
+    set @sql=@sql+' IF OBJECT_ID(''tempdb..#ta'') IS NOT NULL  DROP TABLE #ta 
+	select b.EquipmentInterfaceID, b.FaultCode, b.FaultName, b.MotionStatus, b.FloorCode, b.FloorMun, b.DoorStatus, a.EquipmentType
+	, a.EquipmentCode, a.EquipmentName,a.ProductCode,case when ISNULL(b.FaultCode,'''')=''''  or ISNULL(b.FaultCode,'''')=''0'' then case 
+	when datediff(ss,ISNULL(b.CreateOn,DATEADD(DAY,-1,getdate())),getdate())>'''+CAST(@FaultTime as varchar)+'''
+	then ''离线'' else ''正常'' end else b.FaultName end as EquipmentStatus into #ta from dbo.MEquipment a 
+	left outer join (
+	select * from dbo.BEquipmentStatus where EquipmentCode+''~''+CONVERT(varchar(100),CreateOn, 13) in (  select EquipmentCode+''~''+CONVERT(varchar(100),
+	MAX(CreateOn), 13) from dbo.BEquipmentStatus where EquipmentCode in (select EquipmentCode from #taMEquipment)  group by EquipmentCode)  
+	) b on b.EquipmentCode=a.EquipmentCode and b.EquipmentType=a.EquipmentType 
+	where 1=1  and a.EquipmentCode in (select EquipmentCode from #taMEquipment);'
+	----统计
+	set @sql=@sql+' declare @totalpage  int,@totalcount int,@offLinecount int,@faultcount int,@normalcount int
+	 set @totalcount=(select COUNT(*) from #ta) 
+	 set @offLinecount=(select COUNT(*) from #ta where EquipmentStatus=''离线'') 
+	 set @faultcount=(select COUNT(*) from #ta where EquipmentStatus!=''离线'' and EquipmentStatus!=''正常'')
+	 set @normalcount=(select COUNT(*) from #ta where EquipmentStatus=''正常'')
+	 select @totalpage=(COUNT(''A'')/'+CAST(@pageSize as varchar)+')+case when (COUNT(''A'')%'+CAST(@pageSize as varchar)+')>0 then 1 else 0 end from #ta'
+	----统计结束
+	
+	----分页处理
+	set @sql=@sql+' declare @temp int
+	set @temp='+CAST(@pageSize as varchar)+'*('+CAST(@page as varchar)+' - 1)
+	begin
+	 select top (select '+CAST(@pageSize as varchar)+') *
+	 ,@totalcount as TotalCount,@offLinecount as OffLineCount,@faultcount as FaultCount,@normalcount as NormalCount,@totalpage as TotalPage ,Province,City,County,Village,State,ResidentialArea,StreetNumber,Unit,LadderNo
+ from #ta left outer join dbo.MEquipment a on #ta.EquipmentCode=a.EquipmentCode where #ta.EquipmentCode      
+ not in (select top (select @temp) EquipmentCode from #ta) order by #ta.EquipmentCode  
+	end'
+	
+	----分页结束
+	
+	
+	--select @sql
+	exec(@sql)
+END
+
+
+
+------------------------------------------------Paul 20160830
+alter table dbo.BEquipmentStatus alter column [FloorMun] varchar(50)
+alter table dbo.BEquipmentStatus_History alter column [FloorMun] varchar(50)
+
+
+-----------------------------------------------Paul 20160905
+alter table dbo.BEquipmentInterface add
+[A031] [varchar](50) NULL,
+	[A032] [varchar](50) NULL,
+	[A033] [varchar](50) NULL,
+	[A034] [varchar](50) NULL,
+	[A035] [varchar](50) NULL,
+	[A036] [varchar](50) NULL,
+	[A037] [varchar](50) NULL,
+	[A038] [varchar](50) NULL,
+	[A039] [varchar](50) NULL,
+	[A0310] [varchar](50) NULL,
+	[A0311] [varchar](50) NULL,
+	[A0312] [varchar](50) NULL,
+	[A0313] [varchar](50) NULL,
+	[A0314] [varchar](50) NULL,
+	[A0315] [varchar](50) NULL,
+	[A0316] [varchar](50) NULL
+	
+	alter table dbo.BEquipmentInterface_History add
+[A031] [varchar](50) NULL,
+	[A032] [varchar](50) NULL,
+	[A033] [varchar](50) NULL,
+	[A034] [varchar](50) NULL,
+	[A035] [varchar](50) NULL,
+	[A036] [varchar](50) NULL,
+	[A037] [varchar](50) NULL,
+	[A038] [varchar](50) NULL,
+	[A039] [varchar](50) NULL,
+	[A0310] [varchar](50) NULL,
+	[A0311] [varchar](50) NULL,
+	[A0312] [varchar](50) NULL,
+	[A0313] [varchar](50) NULL,
+	[A0314] [varchar](50) NULL,
+	[A0315] [varchar](50) NULL,
+	[A0316] [varchar](50) NULL
+

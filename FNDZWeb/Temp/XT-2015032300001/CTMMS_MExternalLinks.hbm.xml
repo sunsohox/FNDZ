@@ -1,0 +1,16 @@
+<?xml version="1.0"  encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" assembly="Maticsoft" namespace="Maticsoft">
+	<class name="Maticsoft.Entity.CTMMS_MExternalLinks, Maticsoft" table="CTMMS_MExternalLinks">
+		<id name="ID" column="ID" type="string" unsaved-value="0">
+      			      			
+      	</id>      		
+		<property name="LinksName" column="LinksName" type="string"  />
+		<property name="LinksPath" column="LinksPath" type="string"  />
+		<property name="ISUse" column="ISUse" type="int"  />
+		<property name="CreatBy" column="CreatBy" type="string"  />
+		<property name="CreatOn" column="CreatOn" type="DateTime"  />
+		<property name="UpdateBy" column="UpdateBy" type="string"  />
+		<property name="UpdateOn" column="UpdateOn" type="DateTime"  />
+				
+	</class>
+</hibernate-mapping>

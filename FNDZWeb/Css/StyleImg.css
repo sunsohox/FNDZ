@@ -1,0 +1,223 @@
+﻿ .yj{
+    padding:5px; width:265px; height:215px;
+    border: 0px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+    font-size:4px;
+    /*background-color:#e3ebf6;*/
+    }
+       .yj2{
+    padding:5px; width:265px; height:215px;
+    border: 0px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    float:left;
+    margin-left:5px;
+    margin-top:5px;
+    font-size:4px;
+    /*background-color:#e3ebf6;*/
+    }
+
+    .tu {
+     padding:2px; width:250px; height:210px;
+    border: 0px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    margin-left:2px;
+    margin-top:0.1px;
+    font-size:4px;
+    float:left;
+    }
+    .tu1 {
+     padding:2px; width:155px; height:130px;
+    border: 0px solid #000000;
+    -moz-border-radius: 1px;
+    -webkit-border-radius: 1px;
+    margin-left:2px;
+    margin-top:5px;
+    font-size:11px;
+    float:left;
+    }
+    .tu2 {
+        margin:2px;border:0;padding:0;
+    }
+
+    .tu3 {
+     padding:5px; width:300px; height:330px;
+    border: 1px solid #000000;
+    -moz-border-radius: 15px;
+    -webkit-border-radius: 15px;
+    margin-left:2px;
+    margin-top:5px;
+    font-size:4px;
+    float:left;
+    }
+
+    
+
+    .imgElClose{
+	background:url('../Images/Gif/Elevator/E-Close.gif') no-repeat center;
+    } 
+    .imgElCloseFault{
+	background:url('../Images/Gif/Elevator/E-CloseFault.gif') no-repeat center;
+    } 
+    .imgElDown{
+	background:url('../Images/Gif/Elevator/E-Down.gif') no-repeat center ;
+    } 
+    .imgElDownFault{
+	background:url('../Images/Gif/Elevator/E-DownFault.gif') no-repeat center ;
+    } 
+    .imgElMaintenance{
+	background:url('../Images/Gif/Elevator/E-Maintenance.gif') no-repeat center ;
+    } 
+    .imgElNoSignal{
+	background:url('../Images/Gif/Elevator/E-NoSignal.gif') no-repeat center ;
+    } 
+    .imgElOpen{
+	background:url('../Images/Gif/Elevator/E-Open.gif') no-repeat center ;
+    } 
+    .imgElOpenFault{
+	background:url('../Images/Gif/Elevator/E-OpenFault.gif') no-repeat center;
+    } 
+    .imgElUp{
+	background:url('../Images/Gif/Elevator/E-Up.gif') no-repeat center ;
+    } 
+    .imgElUpFault{
+	background:url('../Images/Gif/Elevator/E-UpFault.gif') no-repeat center ;
+    } 
+
+
+
+
+
+    .imgEsDown{
+	background:url('../Images/Gif/Escalator/E-Down.gif') no-repeat center ;
+    }
+    .imgEsDownPolice{
+	background:url('../Images/Gif/Escalator/E-DownPolice.gif') no-repeat center ;
+    }
+    .imgEsFastDown{
+	background:url('../Images/Gif/Escalator/E-FastDown.gif') no-repeat center ;
+    }
+    .imgEsFastDownPolice{
+	background:url('../Images/Gif/Escalator/E-FastDownPolice.gif') no-repeat center ;
+    }
+     .imgEsFastUp{
+	background:url('../Images/Gif/Escalator/E-FastUp.gif') no-repeat center ;
+    }
+    .imgEsFastUpPolice{
+	background:url('../Images/Gif/Escalator/E-FastUpPolice.gif') no-repeat center ;
+    }
+    .imgEsMaintenance{
+	background:url('../Images/Gif/Escalator/E-Maintenance.gif') no-repeat center ;
+    }
+    .imgEsNoSignal{
+	background:url('../Images/Gif/Escalator/E-NoSignal.gif') no-repeat center ;
+    }
+     .imgEsSlowDown{
+	background:url('../Images/Gif/Escalator/E-SlowDown.gif') no-repeat center ;
+    }
+    .imgEsSlowDownPolice{
+	background:url('../Images/Gif/Escalator/E-SlowDownPolice.gif') no-repeat center ;
+    }
+    .imgEsSlowUp{
+	background:url('../Images/Gif/Escalator/E-SlowUp.gif') no-repeat center ;
+    }
+    .imgEsSlowUpPolice{
+	background:url('../Images/Gif/Escalator/E-SlowUpPolice.gif') no-repeat center ;
+    }
+     .imgEsStandby{
+	background:url('../Images/Gif/Escalator/E-Standby.gif') no-repeat center ;
+    }
+    .imgEsStandbyPolice{
+	background:url('../Images/Gif/Escalator/E-StandbyPolice.gif') no-repeat center ;
+    }
+    .imgEsUp{
+	background:url('../Images/Gif/Escalator/E-Up.gif') no-repeat center ;
+    }
+    .imgEsUpPolice{
+	background:url('../Images/Gif/Escalator/E-UpPolice.gif') no-repeat center ;
+    }
+
+
+
+
+
+    .imgSiDown{
+	background:url('../Images/Gif/Sidewalk/S-Down.gif') no-repeat center ;
+    }
+    .imgSiDownPolice{
+	background:url('../Images/Gif/Sidewalk/S-DownPolice.gif') no-repeat center ;
+    }
+    .imgSiFastDown{
+	background:url('../Images/Gif/Sidewalk/S-FastDown.gif') no-repeat center ;
+    }
+    .imgSiFastDownPolice{
+	background:url('../Images/Gif/Sidewalk/S-FastDownPolice.gif') no-repeat center ;
+    }
+     .imgSiFastUp{
+	background:url('../Images/Gif/Sidewalk/S-FastUp.gif') no-repeat center ;
+    }
+    .imgSiFastUpPolice{
+	background:url('../Images/Gif/Sidewalk/S-FastUpPolice.gif') no-repeat center ;
+    }
+    .imgSiMaintenance{
+	background:url('../Images/Gif/Sidewalk/S-Maintenance.gif') no-repeat center ;
+    }
+    .imgSiNoSignal{
+	background:url('../Images/Gif/Sidewalk/S-NoSignal.gif') no-repeat center ;
+    }
+     .imgSiSlowDown{
+	background:url('../Images/Gif/Sidewalk/S-SlowDown.gif') no-repeat center ;
+    }
+    .imgSiSlowDownPolice{
+	background:url('../Images/Gif/Sidewalk/S-SlowDownPolice.gif') no-repeat center ;
+    }
+    .imgSiSlowUp{
+	background:url('../Images/Gif/Sidewalk/S-SlowUp.gif') no-repeat center ;
+    }
+    .imgSiSlowUpPolice{
+	background:url('../Images/Gif/Sidewalk/S-SlowUpPolice.gif') no-repeat center ;
+    }
+     .imgSiStandby{
+	background:url('../Images/Gif/Sidewalk/S-Standby.gif') no-repeat center ;
+    }
+    .imgSiStandbyPolice{
+	background:url('../Images/Gif/Sidewalk/S-StandbyPolice.gif') no-repeat center ;
+    }
+    .imgSiUp{
+	background:url('../Images/Gif/Sidewalk/S-Up.gif') no-repeat center ;
+    }
+    .imgSiUpPolice{
+	background:url('../Images/Gif/Sidewalk/S-UpPolice.gif') no-repeat center ;
+    }    
+
+    .te {
+        width:80px;
+        font-size:11px;
+    }
+
+    #tab_box td{
+        border:1px solid #a0c6e5
+    }
+    p{	font-family:'Times New Roman';}
+    
+    #dd2{
+			/*width:100px;*/
+			height:50px;
+			background:#fefefe;
+			border:1px solid #e3ebf6;
+			position:absolute;
+			/*left:600px;
+			top:200px;*/
+		}
+    #center{
+    position:absolute;
+    left:5%;
+    top:70%;
+    margin-left:-50px;
+    margin-top:-5px;
+    }

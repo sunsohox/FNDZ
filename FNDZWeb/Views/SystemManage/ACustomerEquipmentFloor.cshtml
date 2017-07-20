@@ -1,0 +1,322 @@
+﻿@{ 
+    System.Data.DataTable dt = Admin.EntityDefinitions.ACustomerEquipmentRule.GetACustomerEquipmentListByCustomerCodeOnly(ViewBag.CustomerCode);
+    System.Data.DataTable dtFloor = Admin.EntityDefinitions.ACustomerEquipmentFloorRule.GetACustomerEquipmentFloorN();  
+    Layout = null;
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+
+<div class="easyui-layout" data-options="fit:true">
+    <div id="EquipmentFloor_tb">
+        <label>客户设备编号:</label>
+        <select onchange="load()" id="drpCustEquipmentCodeFloor" style="width:150px;">
+            @{
+                foreach (System.Data.DataRow row in dt.Rows)
+                    {
+                <option value="@row["CustEquipmentCode"]">@row["EquipmentName"]</option>  
+                    }
+            }
+        </select>
+        <a id="btn_RptFlooradd" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-add',plain:true">添加</a>
+        <a id="btn_RptFloordel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">删除</a>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
+        <a id="btn_RptFloorhistory" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-daohang',plain:true">楼层拷贝</a>
+    </div>
+    <form id="EquipmentFloorForm" method="post"> 
+        <table id="EquipmentFloor_dg" ></table>
+    </form>
+    
+</div>
+<!--Mgr窗体-->
+<div id="dlgFloorHistory" class="easyui-dialog" style="width:600px;height:0.1px;"
+		closed="true" buttons="#dlgFloorHistory-buttons">
+	<div id="tbFloorHistory" style="height: auto">
+    <label>楼层代码编号:</label>
+    <select onchange="loadFloorHistory()" id="drpFloorHistoryID">
+        @{
+            foreach (System.Data.DataRow row in dtFloor.Rows)
+                {
+            <option value="@row[2]">@row[1]  [客户名称： @row[0]]</option> 
+                }
+        }
+    </select>
+
+</div>
+    <table id="FloorHistory_dg" title="楼层代码内容" data-options="toolbar: '#tbFloorHistory',
+                    singleSelect:true,remoteSort:false,sortOrder:'asc',sortName:'FloorCode'">
+        <thead>
+            <tr>
+                <th data-options="field:'FloorCode',width:120,sortable:true">楼层编码</th>
+                <th data-options="field:'CustFloorID',width:120,sortable:true">楼层代码</th>
+                <th data-options="field:'FloorMun',width:120,sortable:true">楼层显示</th>
+                <th data-options="field:'FloorName',width:120,sortable:true">楼层名称</th>            
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="dlgFloorHistory-buttons" style="height:0.1px;">
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="btnCopy" onclick="copyFloor()" >拷贝</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlgFloorHistory').dialog('close')">关闭</a>
+</div>
+<script>
+
+
+    //--------------------------------------历史故障代码拷贝处理---------------
+    function loadFloorHistory() {
+        if ($("#drpFloorHistoryID").val()) {
+            var dg = $('#FloorHistory_dg').datagrid();
+            dg.datagrid('loadData', []);
+            dg.datagrid({
+                url: '@Html.Raw(Url.Action("GetACustomerEquipmentFloorDataByID", "SystemManage"))',
+                queryParams: {
+                    ID: $("#drpFloorHistoryID").val()
+                },
+                singleSelect: true,
+                multiSort: false,
+            });
+        }
+    }
+
+    function copyFloor() {
+
+        $.ajax({
+            type: 'GET',
+            url: '../SystemManage/CopyACustomerEquipmentFloor' + '?ID=' + $("#drpFloorHistoryID").val() + '&CustomerCode=' + '@ViewBag.CustomerCode' + '&CustEquipmentCode=' + $("#drpCustEquipmentCodeFloor").val(),
+            async: false,//同步
+            cache: false,//不读取缓存
+            dataType: "json",
+            success: function (data) {
+                if (data == 'Saveok' || data == 'Updateok') {
+                    $('#EquipmentFloor_dg').datagrid('acceptChanges');
+                    $('#EquipmentFloor_dg').datagrid('reload');
+                    $.messager.alert("操作", "操作成功！");
+                    $('#dlgFloorHistory').dialog('close');
+                }
+                else {
+                    $.messager.alert("操作", result);
+                    return;
+                }
+                
+            }
+        });
+    }
+
+
+
+
+
+    //-------------------------------------------------------------------------
+
+    function load() {
+        if ($("#drpCustEquipmentCodeFloor").val()) {
+            var dg = $('#EquipmentFloor_dg').datagrid();
+            dg.datagrid('loadData', []);
+            dg.datagrid({
+                url: '@Html.Raw(Url.Action("GetACustomerEquipmentFloorData", "SystemManage"))',
+                queryParams: {
+                    CustomerCode: '@ViewBag.CustomerCode',
+                    CustEquipmentCode: $("#drpCustEquipmentCodeFloor").val()
+                },
+                remoteSort: false,
+                checkbox: true,
+                rownumbers: true
+            });
+        }
+    }
+    function formatEquipmentFloorCode(row) {
+        var s = '<span style="font-weight:bold">' + row.FloorCode + '</span><br/>' +
+            //'<span style="color:#888">' + row.FloorID + '</span><br/>' +
+                 '<span style="color:#888">' + row.FloorMun + '</span><br/>' +
+                 '<span style="color:#888">' + row.FloorName + '</span>';
+        return s;
+    }
+    $(function () {
+
+        //删除行
+        $('#btn_RptFloordel').click(function () {
+            EquipmentFloordelete();
+        });
+        //添加行
+        $('#btn_RptFlooradd').click(function () {
+            EquipmentFlooradd();
+        });
+
+        $('#btn_RptFloorhistory').click(function () {
+            OpenHistoryFloor();
+        });
+        load();
+    });
+
+    function OpenHistoryFloor() {
+        var top = $("#view_box").offset().top + 10;
+        var left = $("#view_box").offset().left + 200;
+        $('#dlgFloorHistory').window('open').window('resize', { top: top, left: left });
+        $('#dlgFloorHistory').dialog('setTitle', '设备楼层选择');
+        $("#dlgFloorHistory").css("height", "400px");
+        $("#dlgFloorHistory-buttons").css("height", "30px");
+        loadFloorHistory();
+    }
+
+    $('#EquipmentFloor_dg').datagrid({
+        //url: '@Html.Raw(Url.Action("GetACustomerEquipmentFloorData", "SystemManage", new { CustomerCode = ViewBag.CustomerCode }))',
+        //width: 550,
+        height: 350,
+        onClickRow: onClickRow,
+        rownumbers: true,
+        checkbox: true,
+        toolbar: '#EquipmentFloor_tb',
+        remoteSort: false,
+        columns: [
+            [
+                { field: 'ck', checkbox: true },
+                {
+                    title: '楼层编号', field: 'CustFloorCode', width: 160, align: 'center', editor: {
+                        type: 'combobox',
+                        options: {
+                            valueField: 'FloorCode',
+                            textField: 'FloorCode',
+                            required: true,
+                            url: '@Html.Raw(Url.Action("GetMFloorCodesData", "SystemManage"))'
+                            ,
+                            panelHeight: 200,
+                            panelWidth: 400,
+                            formatter: formatEquipmentFloorCode
+                            ,
+                            onChange: function (newValue) {
+                                if (newValue) {
+                                    if (editIndex == undefined) { return true; }
+                                    var edCode = $('#EquipmentFloor_dg').datagrid('getEditor', { index: editIndex, field: 'CustFloorCode' });
+                                    var ed = $('#EquipmentFloor_dg').datagrid('getEditor', { index: editIndex, field: 'FloorMun' });
+                                    var ed2 = $('#EquipmentFloor_dg').datagrid('getEditor', { index: editIndex, field: 'FloorName' });
+                                    //var ed3 = $('#EquipmentFloor_dg').datagrid('getEditor', { index: editIndex, field: 'FloorID' });
+                                    if (edCode && ed && ed2) {
+                                        var flag = false;
+                                        var s = $(edCode.target).combobox("getData");
+                                        for (var i = 0; i < s.length; i++) {
+                                            if (newValue == s[i].FloorCode) {
+                                                flag = true;
+                                                $(ed.target).val(s[i].FloorMun);
+                                                $(ed2.target).val(s[i].FloorName);
+                                                //$(ed3.target).val(s[i].FloorID);
+                                                break;
+                                            }
+                                        }
+                                        if (!flag)
+                                            $(ed.target).val("");
+
+                                    }
+                                }
+                            },
+                            filter: function (q, row) {
+                                return row.CustFloorCode.toLowerCase().indexOf(q.toLowerCase()) >= 0 || row.FloorName.toLowerCase().indexOf(q.toLowerCase()) >= 0;
+                            }
+                        }
+                    }, sortable: true
+                },
+                { title: '楼层代码', field: 'CustFloorID', width: 150, sortable: true, editor: { type: 'validatebox', options: { required: true } } },
+                { title: '楼层显示', field: 'FloorMun', width: 150, sortable: true, editor: 'text' },
+                { title: '楼层名称', field: 'FloorName', width: 250, sortable: true, editor: 'text' }
+            ]
+        ]
+
+    });
+
+    function EquipmentFloorsave() {
+        if (EquipmentFloorEditing()) {
+            var inserted = obj.datagrid('getChanges', "inserted");
+            var updated = obj.datagrid('getChanges', "updated");
+            var deleted = obj.datagrid('getChanges', "deleted");
+            var effectRow = new Object();
+            $.ajax({
+                url: '@Html.Raw(Url.Action("SaveACustomerEquipmentFloor", "SystemManage", new { CustomerCode = ViewBag.CustomerCode }))' + '&CustEquipmentCode=' + $("#drpCustEquipmentCodeFloor").val(),
+                type: 'POST',
+                data: { InsertContent: JSON.stringify(inserted), UpdateContent: JSON.stringify(updated), DeleteContent: JSON.stringify(deleted) },
+                error: function () { $.messager.alert('错误', '不知道的错误'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '保存成功');
+                        $('#EquipmentFloor_dg').datagrid('acceptChanges');
+                        $('#EquipmentFloor_dg').datagrid('reload');
+                    }
+                    else {
+                        $.messager.alert('错误', result);
+                    }
+                }
+            });
+        }
+    }
+
+    //function getChanges() {
+    //    var rows = obj.datagrid('getChanges');
+    //    console.log(rows);
+    //}
+
+
+    function EquipmentFlooradd() {
+        if (EquipmentFloorEditing()) {
+            //如果有默认值的话 你可以这样写
+            //obj.datagrid('appendRow',{UnitPrice1:12.5,AdvRcv:true});
+            //追加一行空行
+            obj.datagrid('appendRow', {});
+            editIndex = obj.datagrid('getRows').length - 1;
+            obj.datagrid('selectRow', editIndex).datagrid('beginEdit', editIndex);
+
+            var editors = $('#EquipmentFloor_dg').datagrid('getEditors', editIndex);
+            var FloorMunEditor = editors[2];
+            var FloorNameEditor = editors[3];
+            $(FloorMunEditor.target).attr('disabled', true);
+            $(FloorNameEditor.target).attr('disabled', true);
+        }
+    }
+
+    function EquipmentFloordelete() {
+        //获取选中的行
+        var rows = obj.datagrid('getSelections');
+        if (rows.length == 0) {
+            $.messager.alert('提示', '请选择数据');
+        } else {
+            //创建数组
+            var code = [];
+            for (var i = 0; i < rows.length; i++) {
+                // 获取行
+                var row = rows[i];
+                // 获取行的下标
+                var index = obj.datagrid('getRowIndex', row);
+                // 删除行
+                obj.datagrid('deleteRow', index);
+                // 删除的行放入数组
+                code.push(row.ChargeCode);
+            }
+        }
+    }
+
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (EquipmentFloorEditing()) {
+                obj.datagrid('selectRow', index).datagrid('beginEdit', index);
+                editIndex = index;
+                var editors = $('#EquipmentFloor_dg').datagrid('getEditors', index);
+                var FloorMunEditor = editors[2];
+                var FloorNameEditor = editors[3];
+                $(FloorMunEditor.target).attr('disabled', true);
+                $(FloorNameEditor.target).attr('disabled', true);
+            } else {
+                obj.datagrid('selectRow', editIndex);
+            }
+        }
+    }
+
+    //获取表格对象
+    var obj = $('#EquipmentFloor_dg');
+    var editIndex = undefined;
+    //标示当前编辑行，提高效率，避免使用each遍历所有行来关闭正在编辑的行。
+    function EquipmentFloorEditing() {
+        if (editIndex == undefined) { return true; }
+        if (obj.datagrid('validateRow', editIndex)) {
+            obj.datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

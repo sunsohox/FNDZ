@@ -1,0 +1,225 @@
+﻿@{
+    Admin.EntityDAO.ACustomerData.ACustomerRow row = (Admin.EntityDAO.ACustomerData.ACustomerRow)ViewBag.CompanyData;
+    Master.EntityDAO.MCompanyData dsMCompanyData = Master.EntityDefinitions.MCompanyRule.GetCompanyData();
+    Layout = null;
+    
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+<div class="easyui-layout" data-options="fit:true" id="CustomerMgr">
+    <div data-options="region:'center'" style="padding: 10px;">
+        <div class="easyui-tabs" data-options="plain:true" style="padding: 5px" id="c_tabs">
+            <div title="客户信息" style="padding: 5px; overflow: auto">
+                <div class="easyui-accordion acc_box" style="height: auto;">
+                    <form id="ff" method="post">
+                        <table class="default-tab1">
+                            <tbody>
+                                 <tr>
+                                    <td colspan="2" style="display:none">
+                                        <input type="text" id="HideCustomerCode"  name="HideCustomerCode" value="@((@ViewBag.New=="Y")?"":ViewBag.NCustomerCode)"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width:120px;"><label>客户代码</label></td>
+                                    <td><input class="easyui-validatebox  textbox" style="padding-top:3px;padding-bottom:3px;width: 160px; readonly="true" type="text" id="CustomerCode" name="CustomerCode"  value="@ViewBag.NCustomerCode" />
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>客户名称</label></td>
+                                    <td><input class="easyui-validatebox  textbox "  data-options="required:true" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="CustomerName" name="CustomerName"  value="@((ViewBag.CustomerCode=="")?"":@row.CustomerName)"/>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>公司名称</label></td>
+                                    <td><select class="easyui-combobox"  id="drpCompanyCode" name="drpCompanyCode" style="width:160px;" >
+                                        @*<option selected="selected" value='@((ViewBag.CustomerCode=="")?"":@row.CompanyCode)'>--请选择-- </option> *@
+                                            @{
+                                                if ((ViewBag.CustomerCode != "" && @row.CompanyCode == "") || ViewBag.CustomerCode == "")
+                                                        {
+                                                            <option selected="selected" value="-1">--请选择--</option>
+                                                        }
+                                                foreach (Master.EntityDAO.MCompanyData.MCompanyRow MCompany_row in dsMCompanyData.MCompany.Rows)
+                                                {
+                                                    if (MCompany_row.CompanyCode == ((ViewBag.CustomerCode == "") ? "" : @row.CompanyCode))
+                                                    {
+                                                            <option selected="selected" value="@MCompany_row.CompanyCode">@MCompany_row.CompanyName</option> 
+                                                    }
+                                                    else
+                                                    {<option value="@MCompany_row.CompanyCode">@MCompany_row.CompanyName</option> }
+                                                }
+                                                
+                                            }
+                                        </select>
+                                    </td>
+                                </tr>           
+                                <tr>
+                                    <td><label>电子邮箱</label></td>
+                                    <td><input class="easyui-validatebox textbox" data-options="validType:'email'" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="EmailAddr" name="EmailAddr" value="@((ViewBag.CustomerCode == "") ? "" : row.EmailAddr)" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><label>联系人</label></td>
+                                    <td><input class="easyui-validatebox textbox"  style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="ContactMan" name="ContactMan" value="@((ViewBag.CustomerCode == "") ? "" : row.ContactMan)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>电话</label></td>
+                                    <td><input class="easyui-numberbox " style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Tel" name="Tel" value="@((ViewBag.CustomerCode == "") ? "" : row.Tel)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>手机</label></td>
+                                    <td><input class="easyui-numberbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="MobilePhone" name="MobilePhone"  value="@((ViewBag.CustomerCode == "") ? "" : row.MobilePhone)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>传真</label></td>
+                                    <td><input class="easyui-numberbox " style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Fax" name="Fax"  value="@((ViewBag.CustomerCode == "") ? "" : row.Fax)" /></td>
+                                </tr>
+                                <tr>
+                                    <td><label>地址</label></td>
+                                    <td><input class="easyui-validatebox textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Address" name="Address"   value="@((ViewBag.CustomerCode == "") ? "" : row.Address)" /></td>
+                                </tr>
+            
+                                <tr>
+                                    <td><label>备注</label></td>
+                                    <td><textarea class="easyui-validatebox"  style="height:60px;width:156px;" name="Remark" id="Remark" value="@((ViewBag.CustomerCode == "") ? "" : row.Remark)"></textarea>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div title="客户设备关系" style="padding: 5px;" id="EquipmentBlock"></div>
+            <div title="设备故障代码" style="padding: 5px;" id="EquipmentFaultBlock"></div>
+            <div title="设备楼层" style="padding: 5px;" id="EquipmentFloorBlock"></div>
+        </div>
+    </div>
+    <div data-options="region:'south',border:false" style="text-align: right; padding: 5px;">
+        <a id="btn-save" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+        <a id="btn-cancel" href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" onclick="windowclose()">关闭</a>
+    </div>
+</div>
+
+
+<div data-options="region:'south',border:false" style="text-align: right; padding: 5px;">
+</div>
+<script>
+    $(function () {
+        //var width1 = $('#c_tabs').width() - 10;
+        //var height1 = $('#tab_box').height() - 80;
+        //$('#c_tabs').tabs({ height: height1 });
+        if ('@ViewBag.New' == 'Y') {
+            //$('#c_tabs').tabs('disableTab', 1);
+            //$('#c_tabs').tabs('disableTab', 2);
+            //$('#c_tabs').tabs('disableTab', 3);
+            //$('#c_tabs').tabs('disableTab', 4);
+        }
+        else {
+            $('#CustomerCode').attr("readonly", "readonly");
+        }
+
+
+
+
+    });
+
+
+    function companysave() {
+
+        $('#ff').form('submit', {
+            url: '@Url.Action("ACustomerMgr", "SystemManage")',
+            onSubmit: function () {
+                return $(this).form('validate');
+            },
+            success: function (result) {
+                if (result == 'ok') {
+                    $.messager.alert("操作", "操作成功！");
+                    $('#c_tabs').tabs('enableTab', 1);
+                    $('#c_tabs').tabs('enableTab', 2);
+                    $('#c_tabs').tabs('enableTab', 3);
+                    $('#HideCustomerCode').val($('#CustomerCode').val());
+                }
+                else {
+                    $.messager.alert("操作", result);
+                    return;
+                }
+                $('#dg').datagrid('reload');
+
+            }
+        });
+    }
+    $('#c_tabs').tabs({
+        onSelect: function (title, index) {
+            var tab = $('#c_tabs').tabs('getSelected');
+            if (index == 0) {
+                $('#btn-save').css('display', 'inline-block');
+            }
+            else if (index == 1) {
+                if ($('#HideCustomerCode').val() == '') $('#btn-save').css('display', 'none');
+                else $('#btn-save').css('display', 'inline-block');
+
+                var url = '@Url.Action("ACustomerEquipment", "SystemManage", new { })' + '?CustomerCode=' + $('#HideCustomerCode').val();
+                $('#c_tabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: url
+                    }
+                });
+            }
+
+            else if (index == 2) {
+                if ($('#HideCustomerCode').val() == '') $('#btn-save').css('display', 'none');
+                else $('#btn-save').css('display', 'inline-block');
+                var url = '@Url.Action("ACustomerEquipmentFault", "SystemManage", new { })' + '?CustomerCode=' + $('#HideCustomerCode').val();
+                $('#c_tabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: url
+                    }
+                });
+            }
+            else if (index == 3) {
+                if ($('#HideCustomerCode').val() == '') $('#btn-save').css('display', 'none');
+                else $('#btn-save').css('display', 'inline-block');
+                var url = '@Url.Action("ACustomerEquipmentFloor", "SystemManage", new {  })' + '?CustomerCode=' + $('#HideCustomerCode').val();
+                    $('#c_tabs').tabs('update', {
+                        tab: tab,
+                        options: {
+                            href: url
+                        }
+                    });
+                }
+
+        }
+    });
+
+$('#btn-save').click(function () {
+    var tab = $('#c_tabs').tabs("getSelected");
+    var index = $('#c_tabs').tabs('getTabIndex', tab);
+    if (index == 0) {
+        companysave();
+    }
+    //if (index == 1) {
+    //    listsave();
+    //}
+    if (index == 1) {
+
+        reportsave();
+    }
+    if (index == 2) {
+
+        EquipmentFaultsave();
+    }
+
+    if (index == 3) {
+
+        EquipmentFloorsave();
+    }
+});
+
+function windowclose() {
+    $('#CustomerMgr').parent().window('close');
+
+}
+</script>

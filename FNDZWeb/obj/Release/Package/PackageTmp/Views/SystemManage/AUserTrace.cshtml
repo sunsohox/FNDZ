@@ -1,0 +1,125 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+    <script>
+        $(function () {
+            $('#dg').datagrid({
+                fit: true,
+                url: '../SystemManage/AUserTraceList/',
+                toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 20,       //分页条数
+                columns: [[
+                    // 表头
+                    { field: 'ID', title: 'ID', hidden:true },
+                    { field: 'UserCode', title: '用户代码', sortable: true, width: 100 },
+                    {
+                        field: 'TraceTime', title: '操作时间', sortable: true, width: 150,
+                        formatter: function (date) {
+                            if (date != null) {
+                                var pa = /.*\((.*)\)/;
+                                var unixtime = date.match(pa)
+                                return getTime(unixtime);
+                            }
+                        }
+                    },
+                    { field: 'ActionCode', title: '功能', sortable: true, width: 200 },
+                    { field: 'KeyNo', title: '关键字', sortable: true, width: 200 },
+                    { field: 'ModuleName', title: '功能模块', sortable: true, width: 200 },
+                    { field: 'IP', title: 'IP地址', sortable: true, width: 100 }
+                ]]
+            });
+
+            function onDblClickRow(rowIndex, rowData) {
+            }
+
+            $('#export_item').click(function () {
+                Save_Excel();
+            });
+        });
+
+        //删除
+        function removeUser() {
+            var row = $('#dg').datagrid('getSelections');
+            if (!row || row.length == 0) {
+                $.messager.alert('提示', '请选择要删除的数据');
+                return;
+            }
+            var parm;
+            $.each(row, function (i, n) {
+                if (i == 0) {
+                    parm = n.ID;
+                }
+                else {
+                    parm += "," + n.ID;
+                }
+            });
+            if (row) {
+                $.messager.confirm('删除信息', '您确定删除此条信息吗?', function (r) {
+                    if (r) {
+                        $.post('../SystemManage/AUserTraceDelete/', { idList: parm }, function (result) {
+                            if (result.success) {
+                                $('#dg').datagrid('reload'); // reload the user data
+                                $.messager.alert("提示", "删除成功！");
+                            } else {
+                                $.messager.alert('提示', '删除失败，请检查！');
+                                return;
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }       
+
+        ////条件查询
+        //function Searchcheck() {
+        //    var keywords = $("#SearchUserName").val();
+        //    $('#dg').datagrid('load', {
+        //        UserName: keywords
+        //    });
+        //}
+        //function openSearch() {
+        //    $('#w').dialog('open').dialog('setTitle', '高级查询');
+        //    $("#w").panel("move", {
+        //        left: $('#btnSearch').offset().left,
+        //        top: $('#btnSearch').offset().top + 20
+        //    });
+        //    $('#fm').form('clear');
+        //}
+
+        function clearSearch() {
+            $('#fm').form('clear');
+        }
+
+        
+
+        
+    </script>
+    
+</head>
+<body>
+<table id="dg" style="overflow-y: hidden;width:98%"  sortName= "TraceTime" sortOrder="desc"></table>
+<div id="tb">
+    <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-search',plain:true" id="btnSearch"  onclick="openSearch()">查询</a>
+    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-remove',plain:true" onclick="removeUser()">删除</a>
+    <a id="export_item" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ext'" href="javascript:;">Export</a>
+</div>
+</body>
+</html>

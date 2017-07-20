@@ -1,0 +1,185 @@
+﻿@{
+    //IList<FNDZEntity.Entities.FNDZ_MSchool> lFNDZ_MSchool = FNDZBLL.BLL_MasterManagement.GetMSchoolAllList();
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+
+    <script>
+        var winName;
+        $(function () {
+            $('#dg').datagrid({
+                url: '../SystemManage/AUserList/',
+                //toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 20,       //分页条数
+                columns: [[
+                    // 表头
+                    //{ field: 'UserCode', checkbox: true },
+                    { field: 'UserCode', title: '用户代码', sortable: true, width: 100 },
+                    { field: 'UserName', title: '用户名称', sortable: true, width: 150 },
+                    { field: 'EmailAddr', title: '电子邮箱', sortable: true, width: 200 },
+                    { field: 'Password', title: '密码', sortable: true, width: 100 },                    
+                    { field: 'Phone', title: '电话', sortable: true, width: 100 },
+                    { field: 'Mobile', title: '手机', sortable: true, width: 100 },
+                    {
+                        field: 'Active', title: '是否禁用', sortable: true, width: 150,
+                        formatter: function (date) {
+                            if (date == 0)
+                                return 'N';
+                            else if (date == 1)
+                                return 'Y';
+                        }
+                    },
+                    { field: 'Department', title: '部门', sortable: true, width: 100 },
+                    { field: 'Remark', title: '备注', sortable: true, width: 200 }
+                ]]
+            });
+
+            //双击编辑
+            function onDblClickRow(rowIndex, rowData) {
+                showMgrWindow(rowData["UserCode"], "N");
+                //$('#dlg').dialog('open').dialog('setTitle', '修改' + winName + '信息');
+                //$('#UserCode').attr({ 'readOnly': true });
+                //rowData["Active"] = (rowData["Active"] == 1) ? "on" : rowData["Active"];
+                //$('#dlg-fm').form('load', rowData);
+                //url = '../SystemManage/AUserUpdate/' + rowIndex;
+            }
+                       
+        });
+
+        function showMgrWindow(UserCode, sNew) {
+            $('#view_box').window({
+                title: ' ',
+                href: '@Html.Raw(Url.Action("AUserMgr", "SystemManage", new { }))' + "?UserCode=" + UserCode + "&New=" + sNew,
+                minimizable: false,
+                maximizable: false,
+                collapsible: false,
+                iconCls: '',
+                top: 0,
+                left: 0,
+                fit: true
+                //    ,
+                //height:100
+            });
+        }
+
+        //添加信息
+        var url;
+        function newRow() {
+            showMgrWindow("", "Y");
+        }
+
+        //删除
+        function removeRow() {
+            var row = $('#dg').datagrid('getSelections');
+            if (!row || row.length == 0) {
+                $.messager.alert('提示', '请选择要删除的数据');
+                return;
+            }
+            var parm;
+            $.each(row, function (i, n) {
+                if (i == 0) {
+                    parm = n.UserCode;
+                }
+                else {
+                    parm += "," + n.UserCode;
+                }
+            });
+            if (row) {
+                $.messager.confirm('删除信息', '您确定删除此条信息吗?', function (r) {
+                    if (r) {
+                        $.post('../SystemManage/AUserDelete/', { idList: parm }, function (result) {
+                            if (result.success) {
+                                $('#dg').datagrid('reload'); // reload the user data
+                                $.messager.alert("提示", "删除成功！");
+                            } else {
+                                $.messager.alert('提示', '删除失败，请检查！');
+                                return;
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }       
+
+        //条件查询
+        function Searchcheck() {
+            var keywords = $("#SearchUserName").val();
+            $('#dg').datagrid('load', {
+                UserName: keywords
+            });
+        }
+        function clearSearch() {
+            $('#fm').form('clear');
+        }
+        $(function () {
+            winName = "用户";
+            $('#btnSearch').click(function () { Searchcheck(); });
+            $('#btnClear').click(function () { clearSearch(); });
+            $('#btnAdd').click(function () { newRow(); });
+            $('#btnDel').click(function () { removeRow(); });
+            $('#btnSave').click(function () { saveRow(); });
+            $('#export_item').click(function () { Save_Excel(); });            
+            //查询界面伸缩
+            SetInfoShowPosi();
+        });
+    </script>
+    
+</head>
+<body>
+    <div data-options="region:'center'" id="tab_box">
+    <table style="width:100%">
+        <tr id="trShowSeach">
+            <td>
+                <div style="height:auto;">
+		            <div id="pInfoShow" class="easyui-panel"  style="overflow:auto; width:100%;padding:10px;"
+				            data-options="title:'查询操作',collapsible:true">
+                        <form id="fm" method="post" novalidate>	
+			                <table style="width:100%">
+                                <tbody>
+                                      <tr>
+                                        <td style="width:100px;"><label>用户名称：</label></td>
+                                        <td>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="SearchUserName" name="SearchUserName" />
+                                        </td>
+                                        <td colspan="4">
+                                            <a id="btnSearch" class="easyui-linkbutton" icon="icon-search" href="javascript:void(0)">查询</a> 
+                                            <a id="btnClear" class="easyui-linkbutton" icon="icon-clear" href="javascript:void(0)" >清空</a>  &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a id="btnAdd" class="easyui-linkbutton" icon="icon-add" href="javascript:void(0)">新建</a>
+                                            <a id="btnDel" class="easyui-linkbutton" icon="icon-remove" href="javascript:void(0)" >删除</a> 
+                                            <a id="export_item" class="easyui-linkbutton" icon="icon-ext" href="javascript:void(0)">Excel导出</a> 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                         </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="dg" style="overflow-y: hidden;width:100%"  sortName= "UserName"></table>
+            </td>
+         </tr>
+    </table>
+        <div id="view_box"></div>
+    </div>
+</body>
+</html>

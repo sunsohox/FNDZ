@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{92398830-AF8D-4EBE-A3CE-00426B81E02B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Master</RootNamespace>
+    <AssemblyName>Master</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Class1.cs" />
+    <Compile Include="EntityDAO\MCompanyData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MCompanyData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\MEquipmentData.cs">
+      <DependentUpon>MEquipmentData.xsd</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="EntityDAO\MEquipmentData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MEquipmentData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\MFaultCodesData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MFaultCodesData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDAO\MFloorData.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>MFloorData.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="EntityDefinitions\MCompanyRule.cs" />
+    <Compile Include="EntityDefinitions\MEquipmentRule.cs" />
+    <Compile Include="EntityDefinitions\MFaultCodesRule.cs" />
+    <Compile Include="EntityDefinitions\MFloorRule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common\Common.csproj">
+      <Project>{df66d1f2-f46a-472e-8567-9a61b33abf33}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="EntityDAO\MCompanyData.xsc">
+      <DependentUpon>MCompanyData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MCompanyData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MCompanyData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\MCompanyData.xss">
+      <DependentUpon>MCompanyData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MEquipmentData.xsc">
+      <DependentUpon>MEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MEquipmentData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MEquipmentData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\MEquipmentData.xss">
+      <DependentUpon>MEquipmentData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MFaultCodesData.xsc">
+      <DependentUpon>MFaultCodesData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MFaultCodesData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MFaultCodesData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\MFaultCodesData.xss">
+      <DependentUpon>MFaultCodesData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MFloorData.xsc">
+      <DependentUpon>MFloorData.xsd</DependentUpon>
+    </None>
+    <None Include="EntityDAO\MFloorData.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>MFloorData.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="EntityDAO\MFloorData.xss">
+      <DependentUpon>MFloorData.xsd</DependentUpon>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

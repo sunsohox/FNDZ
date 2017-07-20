@@ -1,0 +1,305 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+
+    <script>
+        var winName;
+        $(function () {
+            $('#dg').datagrid({
+                url: '../MasterManage/MCompanyList/',
+                //toolbar: '#tb', // 工具栏
+                striped: true,   //是否显示斑马线效果。
+                onDblClickRow: onDblClickRow,// 双击编辑
+                rownumbers: true,   //行号
+                autoRowHeight: true,//自动高度
+                pagination: true,   //是否分页 ， 分页是自动分页的，你在后台可以获取到两个参数，这个自己去获取一下我忘记了叫什么名字了
+                pageSize: 20,       //分页条数
+                columns: [[
+                    // 表头
+                    { field: 'CompanyCode', title: '公司代码', sortable: true, width: 120 }, { field: 'CompanyName', title: '公司名称', sortable: true, width: 150 },
+                    { field: 'EmailAddr', title: '邮箱', sortable: true, width: 200 },
+                    { field: 'ContactMan', title: '联系人', sortable: true, width: 100 },
+                    { field: 'Tel', title: '电话', sortable: true, width: 100 },
+                    { field: 'MobilePhone', title: '手机', sortable: true, width: 100 },
+                    { field: 'Fax', title: '传真', sortable: true, width: 100 },
+                    { field: 'Address', title: '地址', sortable: true, width: 100 },
+                    {
+                        field: 'CompanyType', title: '公司类型', sortable: true, width: 60,
+                        formatter: function (date) {
+                            if (date != null) {
+                                if (date == 0) return '客户';
+                                else if (date == 1) return '厂商';
+                                else if (date == 2) return '代理商';
+                                else if (date == 3) return '维保公司';
+                            }
+                        }
+
+                    },
+                    { field: 'CreateBy', title: '创建人', sortable: true, width: 100 },
+                    {
+                        field: 'CreateOn', title: '创建时间', sortable: true, width: 150,
+                        formatter: function (val) {
+                            if (val != null && val != '') {
+                                var date = new Date(val);
+                                return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                            }
+
+                        }
+                    }
+                    ,
+                    { field: 'UpdateBy', title: '修改人', sortable: true, width: 100 },
+                    {
+                        field: 'UpdateOn', title: '修改时间', sortable: true, width: 150,
+                        formatter: function (val) {
+                            if (val != null && val != '') {
+                                var date = new Date(val);
+                                return date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+                            }
+
+                        }
+                    }
+                ]]
+            });
+
+            //双击编辑
+            function onDblClickRow(rowIndex, rowData) {
+                $('#dlg').dialog('open').dialog('setTitle', '修改' + winName + '信息');
+                $('#dlg-fm').form('load', rowData);
+                url = '../MasterManage/MCompanyUpdate/' + rowIndex;
+            }
+                       
+        });
+        //添加信息
+        var url;
+        function newRow() {
+            $('#dlg').dialog('open').dialog('setTitle', '添加' + winName + '信息');
+            $('#dlg-fm').form('clear');
+            UpdateNo();
+            url = '../MasterManage/MCompanySave/';
+        }
+
+        //修改信息
+        function editRow() {
+            var row = $('#dg').datagrid('getSelections');
+            if (row.length == 1) {
+                if (row[0]) {
+                    $('#dlg').dialog('open').dialog('setTitle', '修改' + winName + '信息');
+                    $('#dlg-fm').form('load', row[0]);
+                    url = '../MasterManage/MCompanyUpdate/' + row.Id;
+                }
+            } else {
+                $.messager.alert("提示", "每次只能修改一条，请重选");
+                return;
+            }
+        }
+
+        //保存信息
+        function saveRow() {
+            $('#dlg-fm').form('submit', {
+                url: url,
+                onSubmit: function () {
+                    return $(this).form('validate');
+                },
+                success: function (result) {
+                    if (result == 'Saveok' || result == 'Updateok') {
+                        $('#dlg').dialog('close'); 	// 关闭弹出框
+                        $('#dg').datagrid('reload'); // reload the user data
+                        $.messager.alert("操作", "操作成功！");
+                    }
+                    else {
+                        $.messager.alert("操作", result);
+                        return;
+                    }
+                }
+            });
+        }
+
+        //删除
+        function removeRow() {
+            var row = $('#dg').datagrid('getSelections');
+            if (!row || row.length == 0) {
+                $.messager.alert('提示', '请选择要删除的数据');
+                return;
+            }
+            var parm;
+            $.each(row, function (i, n) {
+                if (i == 0) {
+                    parm = n.CompanyCode;
+                }
+                else {
+                    parm += "," + n.CompanyCode;
+                }
+            });
+            if (row) {
+                $.messager.confirm('删除信息', '您确定删除此条信息吗?', function (r) {
+                    if (r) {
+                        $.post('../MasterManage/MCompanyDelete/', { idList: parm }, function (result) {
+                            if (result.success) {
+                                $('#dg').datagrid('reload'); // reload the user data
+                                $.messager.alert("提示", "删除成功！");
+                            } else {
+                                $.messager.alert('提示', '删除失败，请检查！');
+                                return;
+                            }
+                        }, 'json');
+                    }
+                });
+            }
+        }       
+
+        //条件查询
+        function Searchcheck() {
+            var keywords = $("#SearchCompanyCode").val();
+            $('#dg').datagrid('load', {
+                CompanyCode: keywords
+            });
+        }
+        function clearSearch() {
+            $('#fm').form('clear');
+        }
+        $(function () {
+            winName = "公司";
+            $('#btnSearch').click(function () { Searchcheck(); });
+            $('#btnClear').click(function () { clearSearch(); });
+            $('#btnAdd').click(function () { newRow(); });
+            $('#btnDel').click(function () { removeRow(); });
+            $('#btnSave').click(function () { saveRow(); });
+            $('#export_item').click(function () { Save_Excel(); });            
+            //查询界面伸缩
+            SetInfoShowPosi();
+        });
+
+        //获取编号
+        function UpdateNo() {
+            var t = new Date().getTime();
+            $.ajax({
+                url: "@Html.Raw(Url.Action("GetSequence", "MasterManage"))" + '?t=' + t,
+                dataType: "text",
+                data: { SequenceCode: 'CompanyCode', BhCode: 'GSDM' },
+                success: function (data) {
+                    $("#CompanyCode").val(data);
+                }
+            });
+        }
+    </script>
+    
+</head>
+<body>
+
+    <table style="width:100%">
+        <tr id="trShowSeach">
+            <td>
+                <div style="height:auto;">
+		            <div id="pInfoShow" class="easyui-panel"  style="overflow:auto; width:100%;padding:10px;"
+				            data-options="title:'查询操作',collapsible:true">
+                        <form id="fm" method="post" novalidate>	
+			                <table style="width:100%">
+                                <tbody>
+                                      <tr>
+                                        <td style="width:100px;"><label>公司代码：</label></td>
+                                        <td>
+                                            <input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 120px;" type="text" id="SearchCompanyCode" name="SearchCompanyCode" />
+                                        </td>
+                                        <td colspan="4">
+                                            <a id="btnSearch" class="easyui-linkbutton" icon="icon-search" href="javascript:void(0)">查询</a> 
+                                            <a id="btnClear" class="easyui-linkbutton" icon="icon-clear" href="javascript:void(0)" >清空</a>  &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <a id="btnAdd" class="easyui-linkbutton" icon="icon-add" href="javascript:void(0)">新建</a>
+                                            <a id="btnDel" class="easyui-linkbutton" icon="icon-remove" href="javascript:void(0)" >删除</a> 
+                                            <a id="export_item" class="easyui-linkbutton" icon="icon-ext" href="javascript:void(0)">Excel导出</a> 
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                         </form>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table id="dg" style="overflow-y: hidden;width:100%"  sortName= "CompanyCode"></table>
+            </td>
+         </tr>
+    </table>
+
+<!--Mgr窗体-->
+<div id="dlg" class="easyui-dialog" style="width:400px;height:450px;padding:10px 20px"
+		closed="true" buttons="#dlg-buttons">
+	<form id="dlg-fm" method="post" novalidate>
+        <table>
+            <tr>
+                <td><label>公司代码</label></td>
+                <td><input class="easyui-validatebox  textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;background-color:#fafafa" readonly="true" type="text" id="CompanyCode" name="CompanyCode" />
+
+                </td>
+            </tr>
+            <tr>
+                <td><label>公司名称</label></td>
+                <td><input class="easyui-validatebox  textbox "  data-options="required:true" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="CompanyName" name="CompanyName" />
+
+                </td>
+            </tr>
+            <tr>
+                <td><label>公司类型</label></td>
+                <td><select class="easyui-combobox" data-options="required:true" style="width: 160px" id="CompanyType" name="CompanyType">
+                    <option value="0">客户</option>  
+                    <option value="1">厂商</option>  
+                    <option value="2">代理商</option>  
+                    <option value="3">维保公司</option>
+                    </select>
+                </td>
+            </tr>           
+            <tr>
+                <td><label>电子邮箱</label></td>
+                <td><input class="easyui-validatebox textbox" data-options="validType:'email'" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="EmailAddr" name="EmailAddr" />
+                </td>
+            </tr>
+            <tr>
+                <td><label>联系人</label></td>
+                <td><input class="easyui-validatebox textbox"  style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="ContactMan" name="ContactMan" /></td>
+            </tr>
+            <tr>
+                <td><label>电话</label></td>
+                <td><input class="easyui-numberbox " style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Tel" name="Tel" /></td>
+            </tr>
+            <tr>
+                <td><label>手机</label></td>
+                <td><input class="easyui-numberbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="MobilePhone" name="MobilePhone" /></td>
+            </tr>
+            <tr>
+                <td><label>传真</label></td>
+                <td><input class="easyui-numberbox " style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Fax" name="Fax" /></td>
+            </tr>
+            <tr>
+                <td><label>地址</label></td>
+                <td><input class="easyui-validatebox textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="Address" name="Address" /></td>
+            </tr>
+            
+            <tr>
+                <td><label>备注</label></td>
+                <td><textarea class="easyui-validatebox"  style="height:60px;width:156px;" name="Remark" id="Remark"></textarea>
+
+                </td>
+            </tr>
+        </table>		
+	</form>
+</div>
+<div id="dlg-buttons">
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-ok" id="btnSave">确定</a>
+	<a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-cancel" onclick="javascript:$('#dlg').dialog('close')">关闭</a>
+</div> 
+</body>
+</html>

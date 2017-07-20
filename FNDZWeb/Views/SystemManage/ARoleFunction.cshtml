@@ -1,0 +1,176 @@
+﻿@{
+    Admin.EntityDAO.ARoleData lFNDZ_ARole = Admin.EntityDefinitions.ARoleRule.GetRoleData();
+    Layout = null;
+}
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="~/Content/base.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+
+<script type="text/javascript" src="~/Scripts/jscommon.js"></script>
+<div class="easyui-layout" data-options="fit:true" id="BWorkingOrder_SysMgr">
+    <div data-options="region:'center'" style="padding: 10px;">
+        <div class="easyui-tabs" data-options="plain:true" style="padding: 5px; " id="c_tabs">
+            <div title="角色功能管理" style="padding: 5px; overflow: auto">
+                    <label>角色:</label>
+                    <select  onchange="load()" id="drpRoleCode" style="width:180px;">
+                        @{
+                            foreach (Admin.EntityDAO.ARoleData.ARoleRow ARole_row in lFNDZ_ARole.ARole.Rows)
+                                {
+                            <option value="@ARole_row.RoleCode">@ARole_row.RoleName</option>  
+                                }
+                        }
+                    </select>
+                    <label>模块:</label>
+                    <select  onchange="load()" id="drpModuleCode" style="width:180px;">
+                        <option value="Admin" selected>Admin</option>
+                        <option value="Business">Business</option>
+                        <option value="Master">Master</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-save',plain:true"  onclick="listsave()">保存</a>
+                  
+	                <div style="height:100%;background:#ffffff;padding:5px;">
+                        <table id="dg"  data-options="toolbar: '#tb', singleSelect:true
+                         ,onClickRow: onClickRow,sortName:'FunctionCode'">
+                                <thead>
+                                    <tr>
+                                        <th data-options="field:'ModuleCode',width:120,sortable:true">模块</th>
+                                        <th data-options="field:'RoleName',width:180,sortable:true">角色</th>
+                                        <th data-options="field:'FunctionName',width:200,sortable:true">功能</th>
+                                        <th data-options="field:'SeleRole',width:80,sortable:true, editor:{
+                                                      type:'checkbox',
+                                                       options:{
+                                                           on:'Y',
+                                                           off:'N'
+                                                        }
+                                                    }">是否分配</th>
+                                        
+                                    </tr>
+                                </thead>
+                            </table> 
+                         
+		            </div>
+            </div>
+            <div title="角色列显示分配" style="padding: 5px" ></div>
+            <div title="角色功能分配" style="padding: 5px" ></div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        var height1 = $('#tab_box').height();;
+        var width1 = $('#c_tabs').width();;
+        load();
+        $('.acc_box').accordion({ multiple: true, width: width1 });
+        $('#c_tabs').tabs({
+            //height: height1,
+            onSelect: function (title, index) {
+                changeTabs(index);
+            }
+        });
+
+        function changeTabs(index) {
+            var tab = $('#c_tabs').tabs('getSelected');
+            if (index == 1) {
+                $('#c_tabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: '@Html.Raw(Url.Action("ARoleListField", "SystemManage"))'
+                    }
+                });
+            }
+            if (index == 2) {
+                $('#c_tabs').tabs('update', {
+                    tab: tab,
+                    options: {
+                        href: '@Html.Raw(Url.Action("ARoleSysFunction", "SystemManage"))'
+                    }
+                });
+            }
+
+
+        }
+    });
+
+    var editIndex = undefined;
+
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dg').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dg').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dg').datagrid('validateRow', editIndex)) {
+            $('#dg').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function listsave() {
+        if (endEditing()) {
+            var rows = $('#dg').datagrid('getChanges');
+            $.ajax({
+                url: '@Url.Action("SaveRoleFunction", "SystemManage")',
+                    type: 'POST',
+                    data: { Content: JSON.stringify(rows) },
+                    error: function () { $.messager.alert('error', 'unknown error.'); },
+                    success: function (result) {
+                        if (result == 'ok') {
+                            $.messager.alert('提示', '修改成功!');
+                            $('#dg').datagrid('acceptChanges');
+                        }
+                        else {
+                            $.messager.alert('提示', result);
+                        }
+                    }
+                });
+
+
+
+            }
+        }
+
+
+
+        function load() {
+            if ($("#drpRoleCode").val()) {
+                var t = new Date().getTime();
+                var dg = $('#dg').datagrid();
+                dg.datagrid('loadData', []);
+                dg.datagrid({
+                    url: '@Html.Raw(Url.Action("GetRoleFunctionData", "SystemManage"))',
+                    queryParams: {
+                        RoleCode: $("#drpRoleCode").val(),
+                        ModuleCode: $("#drpModuleCode").val()
+                    },
+                    singleSelect: true,
+                    multiSort: false,
+                });
+            }
+
+
+        }
+        function reject() {
+            $('#dg').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+
+   
+
+</script>

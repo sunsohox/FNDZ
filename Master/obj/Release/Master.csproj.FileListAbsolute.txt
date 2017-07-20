@@ -1,0 +1,8 @@
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\bin\Release\Master.dll.config
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\bin\Release\Master.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\bin\Release\Master.pdb
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\bin\Release\Common.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\bin\Release\Common.pdb
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\obj\Release\Master.csprojResolveAssemblyReference.cache
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\obj\Release\Master.dll
+D:\Project\vs2012Project\FNDZ_Pro20161227\FNDZ_Pro\Master\obj\Release\Master.pdb

@@ -1,0 +1,111 @@
+﻿@{
+    Layout = null;
+}
+<link href="~/Content/base.css" rel="stylesheet" />
+<div id="tb" style="height: auto">
+<label>用户代码:</label>
+<input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="UserCode" name="UserCode" />
+<label>用户名称:</label>
+<input class="easyui-validatebox   textbox" style="padding-top:3px;padding-bottom:3px;width: 160px;" type="text" id="UserName" name="UserName" />
+<a id="btnSearch" class="easyui-linkbutton" data-options="iconCls:'icon-search',plain:true" href="javascript:void(0)"  onclick="load()">查询</a> 
+<a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
+<a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-save',plain:true"  onclick="listsave()">保存</a>
+</div>                
+<div style="height:90%;background:#ffffff;padding:5px;">
+    <table id="dgCustUser"  data-options="toolbar: '#tb', singleSelect:true
+        ,onClickRow: onClickRow,sortName:'UserCode'">
+            <thead>
+                <tr>
+                    <th data-options="field:'UserCode',width:120,sortable:true">用户代码</th>
+                    <th data-options="field:'UserName',width:180,sortable:true">用户名称</th>
+                    <th data-options="field:'IsCustomerUser',width:80,sortable:true, editor:{
+                                    type:'checkbox',
+                                    options:{
+                                        on:'Y',
+                                        off:'N'
+                                    }
+                                }">是否分配</th>
+                                        
+                </tr>
+            </thead>
+        </table>                          
+</div>
+<script>
+    $(function () {
+        load();
+    });
+
+    var editIndex = undefined;
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dgCustUser').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dgCustUser').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dgCustUser').datagrid('validateRow', editIndex)) {
+            $('#dgCustUser').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function listsave() {
+        if (endEditing()) {
+            var rows = $('#dgCustUser').datagrid('getChanges');
+            $.ajax({
+                url: '@Url.Action("SaveCustomerUser", "SystemManage")',
+                type: 'POST',
+                data: { Content: JSON.stringify(rows), CustomerCode: '@ViewBag.CustomerCode' },
+                error: function () { $.messager.alert('error', 'unknown error.'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '修改成功!');
+                        $('#dgCustUser').datagrid('acceptChanges');
+                    }
+                    else {
+                        $.messager.alert('提示', result);
+                    }
+                }
+            });
+
+
+
+        }
+    }
+
+
+
+    function load() {
+        var dg = $('#dgCustUser').datagrid();
+            dg.datagrid('loadData', []);
+            dg.datagrid({
+                url: '@Html.Raw(Url.Action("GetACustomerUserData", "SystemManage"))',
+                queryParams: {
+                    CustomerCode: '@ViewBag.CustomerCode',
+                    UserCode: $("#UserCode").val(),
+                    UserName: $("#UserName").val()
+                    },
+                    singleSelect: true,
+                    multiSort: false,
+                });
+
+
+        }
+        function reject() {
+            $('#dgCustUser').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+
+</script>
+
+

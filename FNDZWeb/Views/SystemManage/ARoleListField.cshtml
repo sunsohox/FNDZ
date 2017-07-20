@@ -1,0 +1,135 @@
+﻿@{
+    Admin.EntityDAO.ARoleData lFNDZ_ARole = Admin.EntityDefinitions.ARoleRule.GetRoleData();
+    System.Data.DataTable dtScreenCode = Admin.EntityDefinitions.AListFieldRule.GetAListFieldListData();
+    Layout = null;
+}
+
+<script type="text/javascript" src="~/Scripts/jscommon.js"></script>
+<div>
+    <label>角色:</label>
+        <select  onchange="ListFieldload()" id="drpListFieldRoleCode" style="width:180px;">
+            @{
+                foreach (Admin.EntityDAO.ARoleData.ARoleRow ARole_row in lFNDZ_ARole.ARole.Rows)
+                    {
+                <option value="@ARole_row.RoleCode">@ARole_row.RoleName</option>  
+                    }
+            }
+        </select>
+        <label>界面名称:</label>
+        <select  onchange="ListFieldload()" id="drpListFieldScreenCode"  style="width:180px;">
+            @{
+                foreach (System.Data.DataRow row in dtScreenCode.Rows)
+                    {
+                <option value="@row["ScreenCode"]">@row["ScreenName"]</option>  
+                    }
+            }
+        </select>
+        <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
+        <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-save',plain:true"  onclick="listListFieldsave()">保存</a>
+                  
+	    <div style="height:100%;background:#ffffff;padding:5px;">
+            <table id="dgListField"  data-options="toolbar: '#tb', singleSelect:true
+                ,onClickRow: onClickRow,sortName:'Choice'">
+                    <thead>
+                        <tr>
+                            <th data-options="field:'ScreenCode',width:120,sortable:true,hidden: true">界面ID</th>
+                            <th data-options="field:'ScreenName',width:120,sortable:true">界面名称</th>
+                            <th data-options="field:'RoleName',width:180,sortable:true">角色</th>
+                            <th data-options="field:'FieldName',width:200,sortable:true">列名</th>
+                            <th data-options="field:'SeleField',width:80,sortable:true, editor:{
+                                            type:'checkbox',
+                                            options:{
+                                                on:'Y',
+                                                off:'N'
+                                            }
+                                        }">是否显示</th>
+                            <th data-options="field:'Choice',width:80,sortable:true, editor:'numberbox'">序号</th>
+                                        
+                        </tr>
+                    </thead>
+                </table> 
+                         
+		</div>
+</div>
+
+<script>
+    $(function () {
+        ListFieldload();
+    });
+
+    var editIndex = undefined;
+
+    function onClickRow(index) {
+        if (editIndex != index) {
+            if (endEditing()) {
+                $('#dgListField').datagrid('selectRow', index)
+                        .datagrid('beginEdit', index);
+                editIndex = index;
+            } else {
+                $('#dgListField').datagrid('selectRow', editIndex);
+            }
+        }
+    }
+
+    function endEditing() {
+        if (editIndex == undefined) { return true }
+        if ($('#dgListField').datagrid('validateRow', editIndex)) {
+            $('#dgListField').datagrid('endEdit', editIndex);
+            editIndex = undefined;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function listListFieldsave() {
+        if (endEditing()) {
+            var rows = $('#dgListField').datagrid('getChanges');
+            $.ajax({
+                url: '@Url.Action("SaveRoleListField", "SystemManage")',
+                type: 'POST',
+                data: { Content: JSON.stringify(rows) },
+                error: function () { $.messager.alert('error', 'unknown error.'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '修改成功!');
+                        $('#dgListField').datagrid('acceptChanges');
+                    }
+                    else {
+                        $.messager.alert('提示', result);
+                    }
+                }
+            });
+
+
+
+        }
+    }
+
+
+
+    function ListFieldload() {
+        if ($("#drpRoleCode").val()) {
+            var dg = $('#dgListField').datagrid();
+            dg.datagrid('loadData', []);
+            dg.datagrid({
+                url: '@Html.Raw(Url.Action("GetRoleListFieldData", "SystemManage"))',
+                    queryParams: {
+                        RoleCode: $("#drpListFieldRoleCode").val(),
+                        ScreenCode: $("#drpListFieldScreenCode").val()
+                    },
+                    singleSelect: true,
+                    multiSort: false,
+                });
+            }
+
+
+        }
+        function reject() {
+            $('#dgListField').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+
+
+
+</script>

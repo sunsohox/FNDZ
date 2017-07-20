@@ -1,0 +1,175 @@
+﻿@{
+    Layout = null;
+    Admin.EntityDAO.AUserData lFNDZ_AUser = Admin.EntityDefinitions.AUserRule.GetUserData(); 
+}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8" />
+    <title>电梯远程监控系统 - Login</title>
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/default/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../Scripts/jquery-easyui-1.4.1/themes/icon.css">
+    <script type="text/javascript" src="../Scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="../Scripts/jquery-easyui-1.4.1/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="../Scripts/jsoutexcel.js"></script>
+    <script type="text/javascript" src="../Scripts/jscommon.js"></script>
+    <script>
+        $(function () {
+            load();
+
+        });
+
+        $(document).ready(function () {
+            $("#drpUserName").combobox({
+                onChange: function (n, o) {
+                    if ($("#drpUserName").val()) {
+                        var dg = $('#dg').datagrid();
+                        dg.datagrid('loadData', []);
+                        dg.datagrid({
+                            url: '@Html.Raw(Url.Action("GetUserRoleData", "SystemManage"))',
+                            queryParams: {
+                                UserCode: n
+                            },
+                            singleSelect: true,
+                            multiSort: false,
+                        });
+                    }            
+                }
+            });
+        });
+
+
+        var editIndex = undefined;
+
+        function onClickRow(index) {
+            if (editIndex != index) {
+                if (endEditing()) {
+                    $('#dg').datagrid('selectRow', index)
+                            .datagrid('beginEdit', index);
+                    editIndex = index;
+                } else {
+                    $('#dg').datagrid('selectRow', editIndex);
+                }
+            }
+        }
+
+        function endEditing() {
+            if (editIndex == undefined) { return true }
+            if ($('#dg').datagrid('validateRow', editIndex)) {
+                $('#dg').datagrid('endEdit', editIndex);
+                editIndex = undefined;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function listsave() {
+            if (endEditing()) {
+                var rows = $('#dg').datagrid('getChanges');
+                $.ajax({
+                    url: '@Url.Action("SaveUserRole", "SystemManage")',
+                type: 'POST',
+                data: { Content: JSON.stringify(rows) },
+                error: function () { $.messager.alert('error', 'unknown error.'); },
+                success: function (result) {
+                    if (result == 'ok') {
+                        $.messager.alert('提示', '修改成功!');
+                        $('#dg').datagrid('acceptChanges');
+                    }
+                    else {
+                        $.messager.alert('提示', result);
+                    }
+                }
+            });
+
+
+
+        }
+        }
+
+
+
+        function load() {
+
+            if ($("#drpUserName").val()) {
+                var dg = $('#dg').datagrid();
+                dg.datagrid('loadData', []);
+                dg.datagrid({
+                    url: '@Html.Raw(Url.Action("GetUserRoleData", "SystemManage"))',
+                queryParams: {
+                    UserCode: $("#drpUserName").val()
+                },
+                singleSelect: true,
+                multiSort: false,
+            });
+            }
+
+
+        }
+        function reject() {
+            $('#dg').datagrid('rejectChanges');
+            editIndex = undefined;
+        }
+    </script>
+</head>
+<body>
+     
+<form id="form1" runat="server">
+    <table width="100%" cellspacing="10" cellpadding="0" height="400">
+    <tr>
+        <td valign="top">             
+             <table width="900px" border="0" cellspacing="0" cellpadding="0" align="center">
+            <tr>
+                <td>  
+                    <div id="tb" style="height: auto">
+                    <label>用户:</label>
+                    <select class="easyui-combobox w100" id="drpUserName" style="width:180px;">
+                        @{
+                            foreach (Admin.EntityDAO.AUserData.AUserRow AUser_row in lFNDZ_AUser.AUser.Rows)
+                                {
+                            <option value="@AUser_row.UserCode">@AUser_row.UserName</option>  
+                                }
+                        }
+                    </select>
+                    <a href="javascript:void(0)" class="easyui-linkbutton" data-options="iconCls:'icon-undo',plain:true" onclick="reject()">取消</a>
+                    <a href="javascript:void(0)" class="easyui-linkbutton"  data-options="iconCls:'icon-save',plain:true"  onclick="listsave()">保存</a>
+
+                    </div>                  
+	                <div style="height:100%;background:#ffffff;padding:5px;">
+		            <div id="p" class="easyui-panel" style="width:100%;height:400px;padding:10px;"
+				            data-options="title:'&nbsp;&nbsp;用户角色管理',collapsible:true">
+                         <table id="dg"  data-options="toolbar: '#tb', singleSelect:true
+                         ,onClickRow: onClickRow,sortName:'UserCode'">
+                                <thead>
+                                    <tr>
+                                        <th data-options="field:'UserCode',width:120,sortable:true">用户代码</th>
+                                        <th data-options="field:'UserName',width:180,sortable:true">用户名称</th>
+                                        <th data-options="field:'RoleCode',width:200,sortable:true">角色代码</th>
+                                        <th data-options="field:'RoleName',width:200,sortable:true">角色名称</th>
+                                        <th data-options="field:'SeleRole',width:80,sortable:true, editor:{
+                                                      type:'checkbox',
+                                                       options:{
+                                                           on:'Y',
+                                                           off:'N'
+                                                        }
+                                                    }">是否分配</th>
+                                        
+                                    </tr>
+                                </thead>
+                            </table> 
+		            </div>
+	            </div>
+                </td>
+            </tr>
+        </table>            
+        </td>
+    </tr>
+    </table>
+</form>
+
+ 
+</body>
+</html>
